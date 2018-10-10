@@ -1,0 +1,71 @@
+[core]
+  editor = setsid emacs
+  symlinks = true
+  autocrlf = false
+  ignorecase = false
+  whitespace = trailing-space,space-before-tab
+  filemode = false
+  excludesfile  = ~/.gitconfig_ignore
+	pager = diff-so-fancy | less --tabs=2 -RFX
+[color]
+  diff = auto
+  status = auto
+  branch = auto
+  interactive = true
+	ui = true
+[pack]
+  packSizeLimit = 2g
+[help]
+  format = html
+[http]
+  sslVerify = true
+	sslCAinfo = /etc/ssl/certs/ca-certificates.crt
+[sendemail]
+  smtpserver = /bin/msmtp.exe
+[diff "astextplain"]
+  textconv = astextplain
+[rebase]
+  autosquash = true
+[merge]
+  ff = true
+  tool = mymeld
+[mergetool "mymeld"]
+  cmd = meld $LOCAL $MERGED $REMOTE
+  # cmd = meld $LOCAL $BASE $REMOTE --auto-merge
+  # cmd = meld --diff $BASE $LOCAL --diff $BASE $REMOTE --diff $LOCAL $BASE $REMOTE --output $MERGED
+[log]
+  name-status=true
+[diff]
+  tool = meld
+  guitool = mymeld
+  algorithm = patience
+  compactHeuristic = true
+  renames = true
+[difftool "my_gvimdiff"]
+  cmd = gvim -d "$LOCAL" "$REMOTE"
+[difftool "mymeld"]
+  cmd = nohup meld "$LOCAL" "$REMOTE" > /dev/null 2>&1
+[alias]
+  c = checkout
+  b = branch
+  dd = difftool -d -g
+  df = difftool -g
+  lg1 = log --graph --abbrev-commit --decorate --date=relative --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(bold yellow)%d%C(reset)' --all
+  lg2 = log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold cyan)%aD%C(reset) %C(bold green)(%ar)%C(reset)%C(bold yellow)%d%C(reset)%n''          %C(white)%s%C(reset) %C(dim white)- %an%C(reset)' --all
+  lg = !"git lg1"
+  cb = "!f() { git checkout -b $1 $2; git checkout $2; }; f"
+  cbfc = "!f() { cb=$(git reflog HEAD | grep 'checkout:' | head -1 | rev | cut -d' ' -f1 | rev); git checkout -b $cb-$1 $cb; git checkout $cb; }; f"
+[difftool]
+  prompt = false
+[color "diff-highlight"]
+	oldNormal = red bold
+	oldHighlight = red bold 52
+	newNormal = green bold
+	newHighlight = green bold 22
+[color "diff"]
+	meta = 227
+	frag = magenta bold
+	commit = 227 bold
+	old = red bold
+	new = green bold
+	whitespace = red reverse

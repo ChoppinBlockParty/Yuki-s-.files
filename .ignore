@@ -1,0 +1,16 @@
+.build
+.git
+
+*.[o]
+*.py[doc]
+*.elc
+*.so
+*.obj
+
+tag
+tags
+.tag
+.tags
+
+node_modules
+archive-contents

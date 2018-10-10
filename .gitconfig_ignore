@@ -1,0 +1,72 @@
+.build
+.git
+
+*.[o]
+*.py[doc]
+*.elc
+*.so
+*.obj
+
+tag
+tags
+.tag
+.tags
+
+node_modules
+archive-contents
+
+.ycm_extra_conf.py
+*.log
+*~
+
+# Mac OS X specific cache files
+.DS_Store
+
+# Sphinx
+_build
+dirhtml
+
+# latex
+*.aux
+*.out
+*.toc
+
+# LyX
+*.lyx#
+
+# Atom and related packages
+.atom-build.json
+.build-tools.cson
+
+
+# LibreOffice
+*.csv#
+
+# Office for Mac
+~$*
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# Eclipse
+.cproject
+.externalToolBuilders
+.project
+.pydevproject
+.settings
+
+# Vim
+*.swp
+
+# Code::Blocks
+/*.cbp
+/*.layout
+
+# Latex
+*.synctex.gz
+
+/.idea
+/nbproject
+
+*.ignore.*
