@@ -23,12 +23,27 @@ function install_file {
     if [[ $(realpath $new_filepath) = $1 ]]; then
       echo "  -- Does not install \"$1\": \"$new_filepath\" exists"
     else
-      echo "  -- Failed to install \'$1\': file \"$new_filepath\" points to\" $(realpath "$new_filepath")\""
+      echo "  -- Failed to install \"$1\": file \"$new_filepath\" points to \"$(realpath "$new_filepath")\""
       exit 1
     fi
   else
     ln -s "$1" "$new_filepath"
     echo "  -- Install \"$1\" to \"$new_filepath\""
+  fi
+}
+
+function install_dir {
+  local new_dirpath="${2:-"$INSTALL_PREFIX"}/$(basename "$1")"
+  if [[ -d $new_dirpath ]]; then
+    if [[ $(realpath $new_dirpath) = $1 ]]; then
+      echo "  -- Does not install \"$1\": \"$new_dirpath\" exists"
+    else
+      echo "  -- Failed to install \"$1\": file \"$new_dirpath\" points to \"$(realpath "$new_dirpath")\""
+      exit 1
+    fi
+  else
+    ln -s "$1" "$(dirname $new_dirpath)"
+    echo "  -- Install \"$1\" to \"$new_dirpath\""
   fi
 }
 
@@ -86,9 +101,9 @@ mkdir -p "$INSTALL_PREFIX/.config/tmux"
 cd "$INSTALL_PREFIX/.config/tmux"
 
 clone_update_git_repo https://github.com/Morantron/tmux-fingers
-cd -
+cd - 1 > /dev/null
 clone_update_git_repo https://github.com/tmux-plugins/tmux-yank
-cd -
+cd - 1 > /dev/null
 
 install_file "$SCRIPT_DIR/.tmux.conf"
 
@@ -97,9 +112,9 @@ mkdir -p "$INSTALL_PREFIX/.config/zsh"
 cd "$INSTALL_PREFIX/.config/zsh"
 
 clone_update_git_repo https://github.com/zsh-users/zsh-syntax-highlighting
-cd -
+cd - 1 > /dev/null
 clone_update_git_repo https://github.com/zsh-users/zsh-completions
-cd -
+cd - 1 > /dev/null
 
 install_file "$SCRIPT_DIR/.zlogin"
 install_file "$SCRIPT_DIR/.zshrc"
@@ -113,7 +128,7 @@ cd "$INSTALL_PREFIX/.config/git"
 
 clone_update_git_repo https://github.com/so-fancy/diff-so-fancy
 install_file "`pwd`/diff-so-fancy" "$BIN_INSTALL_PREFIX"
-cd -
+cd - 1 > /dev/null
 
 install_file "$SCRIPT_DIR/.gitconfig"
 install_file "$SCRIPT_DIR/.gitconfig_ignore"
@@ -122,3 +137,4 @@ install_file "$SCRIPT_DIR/.clang-format"
 install_file "$SCRIPT_DIR/.ignore"
 install_file "$SCRIPT_DIR/.Xresources"
 install_file "$SCRIPT_DIR/.ycm_extra_conf.py"
+install_dir "$SCRIPT_DIR/awesome" "$INSTALL_PREFIX/.config"
