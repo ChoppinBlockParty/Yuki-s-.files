@@ -121,9 +121,6 @@ globalkeys = awful.util.table.join(
       my.spawn_once("thunderbird", "Thunderbird", tags[1][2])
       my.spawn_once("pidgin", "Pidgin", tags[1][2])
       -- my.spawn_once("env -u TMUX urxvt -e env RUNTHISCOMMAND=\"prj && e&\" zsh -il", "urxvt", tags[1][4])
-      -- my.spawn_once("env -u TMUX urxvt -e env RUNTHISCOMMAND=\"rmg && e&\" zsh -il", "urxvt", tags[1][7])
-      -- my.spawn_once("env -u TMUX urxvt -e env RUNTHISCOMMAND=\"spr && e&\" zsh -il", "urxvt", tags[1][8])
-      -- my.spawn_once("env -u TMUX urxvt -e env RUNTHISCOMMAND=\"grg && e&\" zsh -il", "urxvt", tags[1][9])
     end))
 
 -- {{{ Menu
