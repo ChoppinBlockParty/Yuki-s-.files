@@ -5,6 +5,17 @@ set +x
 SCRIPT_DIR="$(realpath -s "$(dirname "$0")")"
 INSTALL_PREFIX="${INSTALL_PREFIX:-`realpath -s $HOME`}"
 BIN_INSTALL_PREFIX="$INSTALL_PREFIX/bin"
+FZF_VERSION=0.17.5
+RG_VERSION=0.10.0
+FD_VERSION=7.1.0
+
+export CC=clang-7
+export CXX=clang++-7
+export AR=llvm-ar-7
+export RANLIB=llvm-ranlib-7
+export CFLAGS='-O3 -fomit-frame-pointer -fstrict-aliasing -flto -pthread'
+export CXXFLAGS='-O3 -fomit-frame-pointer -fstrict-aliasing -flto -pthread'
+export LDFLAGS='-flto -pthread'
 
 function install_file {
   local new_filepath="${2:-"$INSTALL_PREFIX"}/$(basename "$1")"
@@ -38,6 +49,39 @@ function clone_update_git_repo {
 
 mkdir -p "$BIN_INSTALL_PREFIX"
 
+mkdir -p "$SCRIPT_DIR/.fzf-build"
+cd "$SCRIPT_DIR/.fzf-build"
+if [[ ! -f fzf.tgz ]]; then
+  curl -L "https://github.com/junegunn/fzf-bin/releases/download/${FZF_VERSION}/fzf-${FZF_VERSION}-linux_amd64.tgz" > fzf.tgz
+fi
+tar -xzf fzf.tgz
+mv -f fzf "$BIN_INSTALL_PREFIX"
+
+mkdir -p "$SCRIPT_DIR/.rg-build"
+cd "$SCRIPT_DIR/.rg-build"
+if [[ ! -f rg.deb ]]; then
+  curl -L "https://github.com/BurntSushi/ripgrep/releases/download/${RG_VERSION}/ripgrep_${RG_VERSION}_amd64.deb" > rg.deb
+fi
+sudo dpkg --install rg.deb
+
+mkdir -p "$SCRIPT_DIR/.ag-build"
+cd "$SCRIPT_DIR/.ag-build"
+clone_update_git_repo https://github.com/ggreer/the_silver_searcher
+if [[ ! -d "`pwd`/.install" ]]; then
+  ./autoge
+  ./configure --prefix="`pwd`/.install"
+  make
+  make install
+fi
+cp -f "`pwd`/.install/bin/ag" "$BIN_INSTALL_PREFIX"
+
+mkdir -p "$SCRIPT_DIR/.fd-build"
+cd "$SCRIPT_DIR/.fd-build"
+if [[ ! -f fd.deb ]]; then
+  curl -L "https://github.com/sharkdp/fd/releases/download/v${FD_VERSION}/fd_${FD_VERSION}_amd64.deb" > fd.deb
+fi
+sudo dpkg --install fd.deb
+
 mkdir -p "$INSTALL_PREFIX/.config/tmux"
 cd "$INSTALL_PREFIX/.config/tmux"
 
@@ -57,8 +101,9 @@ cd -
 clone_update_git_repo https://github.com/zsh-users/zsh-completions
 cd -
 
-install_file "$SCRIPT_DIR/.zshrc"
 install_file "$SCRIPT_DIR/.zlogin"
+install_file "$SCRIPT_DIR/.zshrc"
+install_file "$SCRIPT_DIR/.zshenv"
 if [[ ! -f "$INSTALL_PREFIX/.extra_aliases" ]]; then
   touch "$INSTALL_PREFIX/.extra_aliases"
 fi
