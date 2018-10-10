@@ -1,4 +1,4 @@
-SCRIPT_DIR="`pwd`"
+SCRIPT_DIR="$HOME"
 CACHE_PREFIX="$HOME/.cache/zsh"
 CONFIG_PREFIX="$HOME/.config/zsh"
 
