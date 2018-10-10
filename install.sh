@@ -9,13 +9,18 @@ FZF_VERSION=0.17.5
 RG_VERSION=0.10.0
 FD_VERSION=7.1.0
 
-export CC=clang-7
-export CXX=clang++-7
-export AR=llvm-ar-7
-export RANLIB=llvm-ranlib-7
-export CFLAGS='-O3 -fomit-frame-pointer -fstrict-aliasing -flto -pthread'
-export CXXFLAGS='-O3 -fomit-frame-pointer -fstrict-aliasing -flto -pthread'
-export LDFLAGS='-flto -pthread'
+function export_clang_toolchain {
+  export CC=clang-7
+  export CXX=clang++-7
+  export AR=llvm-ar-7
+  export RANLIB=llvm-ranlib-7
+  export CFLAGS='-O3 -fomit-frame-pointer -fstrict-aliasing -flto -pthread'
+  export CXXFLAGS='-O3 -fomit-frame-pointer -fstrict-aliasing -flto -pthread'
+  export LDFLAGS='-flto -pthread'
+  sudo rm /usr/bin/ld; sudo ln -s /usr/bin/x86_64-linux-gnu-ld.gold  /usr/bin/ld
+  # FIXME: Find a way to make it automatically
+  # sudo rm /usr/bin/ld; sudo ln -s /usr/bin/x86_64-linux-gnu-ld.bfd  /usr/bin/ld
+}
 
 function install_file {
   local new_filepath="${2:-"$INSTALL_PREFIX"}/$(basename "$1")"
@@ -58,11 +63,67 @@ function clone_update_git_repo {
   local branch="${2:-master}"
   cd "$new_dirpath"
   git checkout "$branch"
-  git pull origin
+  # FIXME: if `branch` is a tag, pull fails
+  git pull origin || true
+  git submodule update --recursive --init
   echo "  -- Update \"$1\", branch $branch"
 }
 
 mkdir -p "$BIN_INSTALL_PREFIX"
+
+
+# {{{ awesome build
+# mkdir -p "$SCRIPT_DIR/.xcb-util-xrm-build"
+# cd "$SCRIPT_DIR/.xcb-util-xrm-build"
+# clone_update_git_repo https://github.com/Airblader/xcb-util-xrm
+# if [[ ! -d "`pwd`/.install" ]]; then
+#   make clean || true
+#   ./autogen.sh
+#   ./configure --prefix="`pwd`/.install" --enable-shared=no --enable-static=yes
+#   make
+#   make install
+# fi
+
+# sudo apt-get -y install --no-install-recommends \
+#        lua5.2 \
+#        liblua5.2-dev \
+#        lua-lgi-dev \
+#        asciidoctor \
+#        libxcb-cursor-dev \
+#        libxcb-randr0-dev \
+#        libxcb-xtest0-dev \
+#        libxcb-xinerama0-dev \
+#        libxcb-util-dev \
+#        libxcb-keysyms1-dev \
+#        libxcb-icccm4-dev \
+#        libxcb-shape0-dev \
+#        libxcb-xkb-dev \
+#        libxkbcommon-x11-dev \
+#        libstartup-notification0-dev \
+#        libxdg-basedir-dev
+
+# mkdir -p "$SCRIPT_DIR/.awesome-build"
+# cd "$SCRIPT_DIR/.awesome-build"
+# clone_update_git_repo https://github.com/awesomeWM/awesome
+
+# if [[ ! -d "`pwd`/.install" ]]; then
+#   rm -rf .build 2 > /dev/null || true
+#   mkdir .build
+#   cd .build
+#   export PKG_CONFIG_PATH="$SCRIPT_DIR/.xcb-util-xrm-build/xcb-util-xrm/.install/lib/pkgconfig"
+#   cmake -GNinja \
+#         -DCMAKE_INSTALL_PREFIX="`pwd`/../.install" \
+#         -DCMAKE_BUILD_TYPE=Release \
+#         -DCMAKE_PREFIX_PATH="$SCRIPT_DIR/.xcb-util-xrm-build/xcb-util-xrm/.install/lib/pkgconfig" \
+#         ../
+#   ninja
+#   ninja install
+#   cd -
+# fi
+# cp -f "`pwd`/.install/bin/awesome" "`pwd`/.install/bin/awesome-client" "$BIN_INSTALL_PREFIX"
+# }}} awesome build
+
+export_clang_toolchain
 
 mkdir -p "$SCRIPT_DIR/.fzf-build"
 cd "$SCRIPT_DIR/.fzf-build"
@@ -83,7 +144,8 @@ mkdir -p "$SCRIPT_DIR/.ag-build"
 cd "$SCRIPT_DIR/.ag-build"
 clone_update_git_repo https://github.com/ggreer/the_silver_searcher
 if [[ ! -d "`pwd`/.install" ]]; then
-  ./autoge
+  make clean || true
+  ./autogen.sh
   ./configure --prefix="`pwd`/.install"
   make
   make install
