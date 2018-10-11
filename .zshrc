@@ -604,7 +604,7 @@ alias history-stat="history 0 | awk '{print \$2}' | sort | uniq -c | sort -n -r 
 alias tmux="env TERM=xterm-256color tmux"
 alias tmuxa='tmux attach-session'
 alias tmuxl='tmux list-sessions'
-if [[ -z "$TMUX" && -z "$EMACS" && -z "$VIM" ]]; then
+if [[ -z $INSIDE_EMACS && -z "$TMUX" && -z "$VIM" ]]; then
   exec tmux
 fi
 
