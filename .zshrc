@@ -5,14 +5,6 @@ CONFIG_PREFIX="$HOME/.config/zsh"
 ###############################################################################
 # Exports
 ###############################################################################
-export PATH="$HOME/bin:$PATH"
-export BROWSER='firefox'
-export EDITOR='setsid emacs'
-export VISUAL='setsid emacs'
-export PAGER='less'
-if [[ -z "$LANG" ]]; then
-  export LANG='en_US.UTF-8'
-fi
 # Ensure path arrays do not contain duplicates.
 typeset -gU cdpath fpath mailpath path
 # Set the list of directories that Zsh searches for programs.
@@ -33,8 +25,6 @@ if [[ ! -d "$TMPDIR" ]]; then
   mkdir -p -m 700 "$TMPDIR"
 fi
 TMPPREFIX="${TMPDIR%/}/zsh"
-export FZF_DEFAULT_OPTS="--bind=ctrl-j:down,ctrl-k:up,alt-j:down,alt-k:up,ctrl-s:kill-line"
-export FZF_DEFAULT_COMMAND='fd --hidden --no-ignore-vcs --color never'
 
 # ZSH ZLE reference, very handy
 # http://zsh.sourceforge.net/Doc/Release/Zsh-Line-Editor.html
