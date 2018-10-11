@@ -1,7 +1,6 @@
 -- Standard awesome library
 local gears = require("gears")
 local awful = require("awful")
--- local dbus = require("dbus")
 awful.rules = require("awful.rules")
 require("awful.autofocus")
 -- Widget and layout library
@@ -20,24 +19,7 @@ cyclefocus.focus_clients = true
 -- How many entries should get displayed before and after the current one?
 cyclefocus.display_next_count = 5
 cyclefocus.display_prev_count = 5  -- only 0 for prev, works better with naughty notifications.
--- cyclefocus.naughty_preset.position = ''
--- local switcher = require("awesome-switcher-preview")
--- switcher.settings.preview_box = true                                 -- display preview-box
--- switcher.settings.preview_box_bg = "#ddddddaa"                       -- background color
--- switcher.settings.preview_box_border = "#22222200"                   -- border-color
--- switcher.settings.preview_box_fps = 30                               -- refresh framerate
--- switcher.settings.preview_box_delay = 10                             -- delay in ms
--- switcher.settings.preview_box_title_font = {"sans","italic","normal"}-- the font for cairo
--- switcher.settings.preview_box_title_font_size_factor = 0.8           -- the font sizing factor
--- switcher.settings.preview_box_title_color = {0,0,0,1}                -- the font color
-
--- switcher.settings.client_opacity = true                             -- opacity for unselected clients
--- switcher.settings.client_opacity_value = 0.8                         -- alpha-value
--- switcher.settings.client_opacity_delay = 150
 local my = require('MyScripts')
-
--- Load Debian menu entries
--- require("debian.menu")
 
 -- {{{ Error handling
 -- Check if awesome encountered an error during startup and fell back to
@@ -77,7 +59,6 @@ beautiful.init("/usr/share/awesome/themes/zenburn/theme.lua")
 -- This is used later as the default terminal and editor to run.
 terminal = "env -u TMUX urxvt"
 editor = os.getenv("EDITOR") or "editor"
--- editor_cmd = terminal .. " -e " .. editor
 editor_cmd = 'env -u TMUX ' .. editor
 
 -- Default modkey.
@@ -89,8 +70,7 @@ modkey = "Mod4"
 
 
 -- Table of layouts to cover with awful.layout.inc, order matters.
-local layouts =
-{
+local layouts = {
     awful.layout.suit.tile.bottom,
     awful.layout.suit.max.fullscreen,
     awful.layout.suit.tile,
@@ -133,7 +113,6 @@ myawesomemenu = {
 }
 
 mymainmenu = awful.menu({ items = { { "awesome", myawesomemenu, beautiful.awesome_icon },
-                                    -- { "Debian", debian.menu.Debian_menu.Debian },
                                     { "open terminal", terminal }
                                   }
                         })
@@ -155,26 +134,18 @@ batterywidget_timer:connect_signal("timeout", function()
 end)
 batterywidget_timer:start()
 
-kbdwidget = wibox.widget.textbox("Eng")
-kbdwidget.border_width = 1
-kbdwidget.border_color = beautiful.fg_normal
-kbdwidget:set_text("Eng")
-
--- dbus.request_name("session", "ru.gentoo.kbdd")
--- dbus.add_match("session", "interface='ru.gentoo.kbdd',member='layoutChanged'")
--- dbus.connect_signal("ru.gentoo.kbdd", function(...)
--- local data = {...}
--- local layout = data[2]
--- lts = {[0] = "Eng", [1] = "Рус"}
--- kbdwidget:set_text(lts[layout])
--- end)
-
--- kbd_dbus_sw_cmd = "qdbus ru.gentoo.KbddService /ru/gentoo/KbddService  ru.gentoo.kbdd.set_layout "
--- kbd_dbus_sw_cmd = "dbus-send --dest=ru.gentoo.KbddService /ru/gentoo/KbddService ru.gentoo.kbdd.set_layout uint32:"
--- kbd_dbus_prev_cmd = "qdbus ru.gentoo.KbddService /ru/gentoo/KbddService ru.gentoo.kbdd.prev_layout"
-kbd_dbus_prev_cmd = "dbus-send --dest=ru.gentoo.KbddService /ru/gentoo/KbddService ru.gentoo.kbdd.prev_layout"
--- kbd_dbus_next_cmd = "qdbus ru.gentoo.KbddService /ru/gentoo/KbddService ru.gentoo.kbdd.next_layout"
-kbd_dbus_next_cmd = "dbus-send --dest=ru.gentoo.KbddService /ru/gentoo/KbddService ru.gentoo.kbdd.next_layout"
+kbdcfg = {}
+kbdcfg.layout = { { "Eng", "us", "" }, { "Рус", "ru", "" } }
+kbdcfg.current = 1
+kbdcfg.widget = wibox.widget.textbox()
+kbdcfg.widget:set_text(kbdcfg.layout[kbdcfg.current][1])
+kbdcfg.switch = function ()
+   kbdcfg.current = kbdcfg.current % #(kbdcfg.layout) + 1
+   local t = kbdcfg.layout[kbdcfg.current]
+   kbdcfg.widget:set_text(t[1])
+   os.execute("setxkbmap " .. t[2] .. " " .. t[3])
+   naughty.notify({title = "Keyboard Layout", text = t[1], timeout = 2})
+end
 
 -- Create a wibox for each screen and add it
 mywibox = {}
@@ -265,7 +236,7 @@ for s = 1, screen.count() do
     local right_layout = wibox.layout.fixed.horizontal()
     if s == 1 then right_layout:add(wibox.widget.systray()) end
     right_layout:add(batterywidget)
-    right_layout:add(kbdwidget)
+    right_layout:add(kbdcfg.widget)
     right_layout:add(mytextclock)
     right_layout:add(mylayoutbox[s])
 
@@ -310,7 +281,8 @@ globalkeys = awful.util.table.join(globalkeys,
     awful.key({modkey}, "k", function () awful.screen.focus_relative(-1) end),
 
     -- Standard program
-    awful.key({ modkey,           }, "Return", function () awful.util.spawn(terminal) end),
+    awful.key({ modkey,           }, "Return", function () awful.spawn(terminal) end),
+    awful.key({ modkey,           }, "Tab",    function () awful.spawn("setsid emacs") end),
     awful.key({ modkey, "Control" }, "r", awesome.restart),
 
     awful.key({ modkey,           }, "l", function () awful.tag.incmwfact( 0.05)     end),
@@ -327,29 +299,8 @@ globalkeys = awful.util.table.join(globalkeys,
     end),
     -- Menubar
     awful.key({ modkey }, "space", function() menubar.show() end),
-    awful.key({"Mod1"}, "Shift_L", function() os.execute(kbd_dbus_next_cmd) end),
-    awful.key({"Shift"}, "Alt_L", function() os.execute(kbd_dbus_next_cmd) end),
-    -- awful.key({ "Mod1" }, "Tab",
-    --   function ()
-    --       awful.client.focus.byidx(1)
-    --       if awful.client.ismarked() then
-    --           awful.screen.focus_relative(-1)
-    --           awful.client.getmarked()
-    --       end
-    --       if client.focus then
-    --           client.focus:raise()
-    --       end
-    --       awful.client.togglemarked()
-    --   end),
-    -- awful.key({ modkey }, "x",
-    --           function ()
-    --               awful.prompt.run({ prompt = "Run Lua code: " },
-    --               mypromptbox[mouse.screen].widget,
-    --               awful.util.eval, nil,
-    --               awful.util.getdir("cache") .. "/history_eval")
-    --           end),
-    -- awful.key({ modkey },            "r",     function () mypromptbox[mouse.screen]:run() end),
-    -- awful.key({ modkey, "Shift"   }, "q", awesome.quit),
+    awful.key({"Mod1"}, "Shift_L", function() kbdcfg.switch() end),
+    awful.key({"Shift"}, "Alt_L", function() kbdcfg.switch() end),
     awful.key({ modkey            }, "u", function() awful.client.swap.byidx(  1) end),
     awful.key({ modkey, "Shift"   }, "u", function() awful.client.swap.byidx( -1) end),
     awful.key({ modkey,           }, "i", function()
@@ -391,10 +342,6 @@ clientkeys = awful.util.table.join(
       cycle_filters = { my.same_tag_name },
       keys = {'Tab', 'ISO_Left_Tab'}  -- default, could be left out
   })
-  -- -- awful.key({ modkey,           }, "t",      function (c) c.ontop = not c.ontop            end),
-  -- awful.key({"Mod1"}, "Tab", function() switcher.switch(1, "Alt_L", "Tab", "ISO_Left_Tab") end),
-  -- awful.key({"Mod1", "Shift"}, "Tab", function() switcher.switch(-1, "Alt_L", "Tab", "ISO_Left_Tab") end)
-  -- Переключение по всем окнам по комбинации Win+Tab
 )
 
 -- Bind all key numbers to tags.
