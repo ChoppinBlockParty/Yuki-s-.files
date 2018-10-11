@@ -190,7 +190,7 @@ function setup_my_prompt {
   # http://zsh.sourceforge.net/Doc/Release/Prompt-Expansion.html#Prompt-Expansion
   # Define prompts.
   PROMPT='%F{81}%~%f%(!. %B%F{red}#%f%b.)
-%F{81}↬%f'
+%F{81}▶%f'
   # RPROMPT='%(?.%B%F{81}:)%f%b.%B%F{81}D:%f%b)'
   RPROMPT=
   # SPROMPT='zsh: correct %F{red}%R%f to %F{green}%r%f [nyae]? '
