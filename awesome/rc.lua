@@ -90,8 +90,8 @@ local layouts = {
 -- Define a tag table which hold all screen tags.
 tags = {}
 for s = 1, screen.count() do
-    -- Each screen has its own tag table.
-    tags[s] = awful.tag({ 1, 2, 3, 4, 5, 6, 7, 8, 9 }, s, layouts[3])
+   -- Each screen has its own tag table.
+    tags[s] = awful.tag({ "ᛝ", "ᛤ", "ᛄ", "ᛪ", "ᚸ", "ᛔ", "ᚌ", "ᛃ", "ᛗ" }, s, layouts[3])
 end
 -- }}}
 
@@ -426,39 +426,34 @@ awful.rules.rules = {
                      raise = true,
                      size_hints_honor = false,
                      keys = clientkeys,
-                     buttons = clientbuttons } },
+                     buttons = clientbuttons,
+                     screen = awful.screen.preferred,
+                     placement = awful.placement.no_overlap+awful.placement.no_offscreen
+      }
+    },
     { rule = { class = "MPlayer" },
       properties = { floating = true } },
     { rule = { class = "pinentry" },
       properties = { floating = true } },
     { rule = { class = "gimp" },
       properties = { floating = true } },
-    { rule = { class = "Xfce4-appfinder" },
-      properties = { floating = true } },
-    { rule = { class = "Xfce4-panel" },
-      properties = { floating = true } },
-    { rule = { class = "guake" },
-      properties = { floating = true } },
     { rule = { class = "Meld" },
       properties = {floating = false, maximized_vertical = false, maximized_horizontal = false}},
     -- Set Firefox to always map on tags number 2 of screen 1.
     {rule = { class = "Firefox" }, properties = {floating=false}}
-    --   properties = { tag = tags[1][2] } },
 }
 -- }}}
 
 -- {{{ Signals
 -- Signal function to execute when a new client appears.
-client.connect_signal("manage", function (c, startup)
-    -- Enable sloppy focus
-    c:connect_signal("mouse::enter", function(c)
-        if awful.layout.get(c.screen) ~= awful.layout.suit.magnifier
-            and awful.client.focus.filter(c) then
-            client.focus = c
-        end
-    end)
 
-    if not startup then
+-- Enable sloppy focus, so that focus follows mouse.
+client.connect_signal("mouse::enter", function(c)
+    c:emit_signal("request::activate", "mouse_enter", {raise = true})
+end)
+
+client.connect_signal("manage", function (c)
+    if not awesome.startup then
         -- Set the windows at the slave,
         -- i.e. put it at the end of others instead of setting it master.
         -- awful.client.setslave(c)
@@ -531,32 +526,31 @@ client.connect_signal("manage", function (c, startup)
 end)
 
 client.connect_signal("focus", function(c)
-  -- local clients_count = 0
+  -- local clients_count = 2
   -- for s = 1, screen.count() do
   --   local tag = awful.tag.selected(s)
   --   if tag then
   --     clients_count = clients_count + table.getn(tag:clients())
   --   end
   -- end
-  -- -- naughty.notify({
-  -- --           -- TODO: use indenting
-  -- --           -- text = tostring(msg)..' ['..tostring(level)..']',
-  -- --           text = tostring(awful.layout.getname(awful.layout.get(c.screen))),
-  -- --           timeout = 10,
-  -- --         })
+  -- naughty.notify({
+  --           -- TODO: use indenting
+  --           -- text = tostring(msg)..' ['..tostring(level)..']',
+  --           text = tostring(awful.layout.getname(awful.layout.get(c.screen))),
+  --           timeout = 10,
+  --         })
   -- local layout_name = awful.layout.getname(awful.layout.get(c.screen))
   -- if clients_count < 2 or layout_name == "fullscreen" or c.fullscreen or c.maximized == true  then
   --   c.border_width = "0"
   --   c.border_color = beautiful.border_focus
   -- else
-    -- c.border_width = "1"
+    c.border_width = "1"
     c.border_color = beautiful.border_focus
     -- c.border_color =  "#AA330000"
   -- end
 end)
 client.connect_signal("unfocus", function(c)
-  c.border_width = "0"
-  -- c.border_color = beautiful.border_normal
+  c.border_color = beautiful.border_normal
 end)
 -- }}}
 
