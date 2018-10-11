@@ -282,7 +282,7 @@ globalkeys = awful.util.table.join(globalkeys,
 
     -- Standard program
     awful.key({ modkey,           }, "Return", function () awful.spawn(terminal) end),
-    awful.key({ modkey,           }, "Tab",    function () awful.spawn("setsid emacs") end),
+    awful.key({ modkey,           }, ",",    function () awful.spawn("setsid emacs") end),
     awful.key({ modkey, "Control" }, "r", awesome.restart),
 
     awful.key({ modkey,           }, "l", function () awful.tag.incmwfact( 0.05)     end),
