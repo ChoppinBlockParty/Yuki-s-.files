@@ -1,7 +1,7 @@
 -- Standard awesome library
 local gears = require("gears")
 local awful = require("awful")
-local dbus = require("dbus")
+-- local dbus = require("dbus")
 awful.rules = require("awful.rules")
 require("awful.autofocus")
 -- Widget and layout library
@@ -37,7 +37,7 @@ cyclefocus.display_prev_count = 5  -- only 0 for prev, works better with naughty
 local my = require('MyScripts')
 
 -- Load Debian menu entries
-require("debian.menu")
+-- require("debian.menu")
 
 -- {{{ Error handling
 -- Check if awesome encountered an error during startup and fell back to
@@ -133,7 +133,7 @@ myawesomemenu = {
 }
 
 mymainmenu = awful.menu({ items = { { "awesome", myawesomemenu, beautiful.awesome_icon },
-                                    { "Debian", debian.menu.Debian_menu.Debian },
+                                    -- { "Debian", debian.menu.Debian_menu.Debian },
                                     { "open terminal", terminal }
                                   }
                         })
@@ -160,14 +160,14 @@ kbdwidget.border_width = 1
 kbdwidget.border_color = beautiful.fg_normal
 kbdwidget:set_text("Eng")
 
-dbus.request_name("session", "ru.gentoo.kbdd")
-dbus.add_match("session", "interface='ru.gentoo.kbdd',member='layoutChanged'")
-dbus.connect_signal("ru.gentoo.kbdd", function(...)
-  local data = {...}
-  local layout = data[2]
-  lts = {[0] = "Eng", [1] = "Рус"}
-  kbdwidget:set_text(lts[layout])
-  end)
+-- dbus.request_name("session", "ru.gentoo.kbdd")
+-- dbus.add_match("session", "interface='ru.gentoo.kbdd',member='layoutChanged'")
+-- dbus.connect_signal("ru.gentoo.kbdd", function(...)
+-- local data = {...}
+-- local layout = data[2]
+-- lts = {[0] = "Eng", [1] = "Рус"}
+-- kbdwidget:set_text(lts[layout])
+-- end)
 
 -- kbd_dbus_sw_cmd = "qdbus ru.gentoo.KbddService /ru/gentoo/KbddService  ru.gentoo.kbdd.set_layout "
 -- kbd_dbus_sw_cmd = "dbus-send --dest=ru.gentoo.KbddService /ru/gentoo/KbddService ru.gentoo.kbdd.set_layout uint32:"
@@ -372,12 +372,14 @@ clientkeys = awful.util.table.join(
   awful.key({ modkey }, "z",
       function (c)
         awful.titlebar.toggle(c)
-        if c.maximized_vertical then
-          c.maximized_horizontal = not c.maximized_horizontal
-          c.maximized_vertical   = not c.maximized_vertical
-          c.maximized_horizontal = not c.maximized_horizontal
-          c.maximized_vertical   = not c.maximized_vertical
-        end
+        -- version < 4.0
+        -- awful.titlebar.toggle(c)
+        -- if c.maximized_vertical then
+        --   c.maximized_horizontal = not c.maximized_horizontal
+        --   c.maximized_vertical   = not c.maximized_vertical
+        --   c.maximized_horizontal = not c.maximized_horizontal
+        --   c.maximized_vertical   = not c.maximized_vertical
+        -- end
       end),
   awful.key({ modkey }, "x",
       function (c)
@@ -567,39 +569,43 @@ client.connect_signal("manage", function (c, startup)
         layout:set_middle(middle_layout)
 
         awful.titlebar(c):set_widget(layout)
+        -- I do not know why but I need it twice
         awful.titlebar.toggle(c)
-        if c.maximized_vertical then
-          c.maximized_horizontal = not c.maximized_horizontal
-          c.maximized_vertical   = not c.maximized_vertical
-          c.maximized_horizontal = not c.maximized_horizontal
-          c.maximized_vertical   = not c.maximized_vertical
-        end
+        awful.titlebar.toggle(c)
+        -- version < 4.0
+        -- awful.titlebar.toggle(c)
+        -- if c.maximized_vertical then
+        --   c.maximized_horizontal = not c.maximized_horizontal
+        --   c.maximized_vertical   = not c.maximized_vertical
+        --   c.maximized_horizontal = not c.maximized_horizontal
+        --   c.maximized_vertical   = not c.maximized_vertical
+        -- end
     end
 end)
 
 client.connect_signal("focus", function(c)
-  local clients_count = 0
-  for s = 1, screen.count() do
-    local tag = awful.tag.selected(s)
-    if tag then
-      clients_count = clients_count + table.getn(tag:clients())
-    end
-  end
-  -- naughty.notify({
-  --           -- TODO: use indenting
-  --           -- text = tostring(msg)..' ['..tostring(level)..']',
-  --           text = tostring(awful.layout.getname(awful.layout.get(c.screen))),
-  --           timeout = 10,
-  --         })
-  local layout_name = awful.layout.getname(awful.layout.get(c.screen))
-  if clients_count < 2 or layout_name == "fullscreen" or c.fullscreen or c.maximized == true  then
-    c.border_width = "0"
-    c.border_color = beautiful.border_focus
-  else
+  -- local clients_count = 0
+  -- for s = 1, screen.count() do
+  --   local tag = awful.tag.selected(s)
+  --   if tag then
+  --     clients_count = clients_count + table.getn(tag:clients())
+  --   end
+  -- end
+  -- -- naughty.notify({
+  -- --           -- TODO: use indenting
+  -- --           -- text = tostring(msg)..' ['..tostring(level)..']',
+  -- --           text = tostring(awful.layout.getname(awful.layout.get(c.screen))),
+  -- --           timeout = 10,
+  -- --         })
+  -- local layout_name = awful.layout.getname(awful.layout.get(c.screen))
+  -- if clients_count < 2 or layout_name == "fullscreen" or c.fullscreen or c.maximized == true  then
+  --   c.border_width = "0"
+  --   c.border_color = beautiful.border_focus
+  -- else
     -- c.border_width = "1"
     c.border_color = beautiful.border_focus
     -- c.border_color =  "#AA330000"
-  end
+  -- end
 end)
 client.connect_signal("unfocus", function(c)
   c.border_width = "0"

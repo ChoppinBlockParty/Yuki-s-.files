@@ -55,10 +55,10 @@ function install_dir {
 function clone_update_git_repo {
   local new_dirpath="`pwd`/$(basename "$1")"
   if [[ -d $new_dirpath ]]; then
-    echo "  -- Does not clone \"$1\": \"$new_path\" exists"
+    echo "  -- Does not clone \"$1\": \"$new_dirpath\" exists"
   else
     git clone "$1"
-    echo "  -- Cloned \"$1\" to \"$new_path\""
+    echo "  -- Cloned \"$1\" to \"$new_dirpath\""
   fi
   local branch="${2:-master}"
   cd "$new_dirpath"
@@ -73,57 +73,57 @@ mkdir -p "$BIN_INSTALL_PREFIX"
 
 
 # {{{ awesome build
-# mkdir -p "$SCRIPT_DIR/.xcb-util-xrm-build"
-# cd "$SCRIPT_DIR/.xcb-util-xrm-build"
-# clone_update_git_repo https://github.com/Airblader/xcb-util-xrm
-# if [[ ! -d "`pwd`/.install" ]]; then
-#   make clean || true
-#   ./autogen.sh
-#   ./configure --prefix="`pwd`/.install" --enable-shared=no --enable-static=yes
-#   make
-#   make install
-# fi
-
-# sudo apt-get -y install --no-install-recommends \
-#        lua5.2 \
-#        liblua5.2-dev \
-#        lua-lgi-dev \
-#        asciidoctor \
-#        libxcb-cursor-dev \
-#        libxcb-randr0-dev \
-#        libxcb-xtest0-dev \
-#        libxcb-xinerama0-dev \
-#        libxcb-util-dev \
-#        libxcb-keysyms1-dev \
-#        libxcb-icccm4-dev \
-#        libxcb-shape0-dev \
-#        libxcb-xkb-dev \
-#        libxkbcommon-x11-dev \
-#        libstartup-notification0-dev \
-#        libxdg-basedir-dev
-
-# mkdir -p "$SCRIPT_DIR/.awesome-build"
-# cd "$SCRIPT_DIR/.awesome-build"
-# clone_update_git_repo https://github.com/awesomeWM/awesome
-
-# if [[ ! -d "`pwd`/.install" ]]; then
-#   rm -rf .build 2 > /dev/null || true
-#   mkdir .build
-#   cd .build
-#   export PKG_CONFIG_PATH="$SCRIPT_DIR/.xcb-util-xrm-build/xcb-util-xrm/.install/lib/pkgconfig"
-#   cmake -GNinja \
-#         -DCMAKE_INSTALL_PREFIX="`pwd`/../.install" \
-#         -DCMAKE_BUILD_TYPE=Release \
-#         -DCMAKE_PREFIX_PATH="$SCRIPT_DIR/.xcb-util-xrm-build/xcb-util-xrm/.install/lib/pkgconfig" \
-#         ../
-#   ninja
-#   ninja install
-#   cd -
-# fi
-# cp -f "`pwd`/.install/bin/awesome" "`pwd`/.install/bin/awesome-client" "$BIN_INSTALL_PREFIX"
-# }}} awesome build
+mkdir -p "$SCRIPT_DIR/.xcb-util-xrm-build"
+cd "$SCRIPT_DIR/.xcb-util-xrm-build"
+clone_update_git_repo https://github.com/Airblader/xcb-util-xrm
+if [[ ! -d "`pwd`/.install" ]]; then
+  make clean || true
+  ./autogen.sh
+  ./configure --prefix="`pwd`/.install" --enable-shared=no --enable-static=yes
+  make
+  make install
+fi
 
 export_clang_toolchain
+
+sudo apt-get -y install --no-install-recommends \
+       lua5.2 \
+       liblua5.2-dev \
+       lua-lgi-dev \
+       asciidoctor \
+       libxcb-cursor-dev \
+       libxcb-randr0-dev \
+       libxcb-xtest0-dev \
+       libxcb-xinerama0-dev \
+       libxcb-util-dev \
+       libxcb-keysyms1-dev \
+       libxcb-icccm4-dev \
+       libxcb-shape0-dev \
+       libxcb-xkb-dev \
+       libxkbcommon-x11-dev \
+       libstartup-notification0-dev \
+       libxdg-basedir-dev
+
+mkdir -p "$SCRIPT_DIR/.awesome-build"
+cd "$SCRIPT_DIR/.awesome-build"
+clone_update_git_repo https://github.com/awesomeWM/awesome
+
+if [[ ! -d "`pwd`/.install" ]]; then
+  rm -rf .build 2 > /dev/null || true
+  mkdir .build
+  cd .build
+  export PKG_CONFIG_PATH="$SCRIPT_DIR/.xcb-util-xrm-build/xcb-util-xrm/.install/lib/pkgconfig"
+  cmake -GNinja \
+        -DCMAKE_INSTALL_PREFIX="`pwd`/../.install" \
+        -DCMAKE_BUILD_TYPE=Release \
+        -DCMAKE_PREFIX_PATH="$SCRIPT_DIR/.xcb-util-xrm-build/xcb-util-xrm/.install/lib/pkgconfig" \
+        ../
+  ninja
+  ninja install
+  cd -
+fi
+sudo rsync -a "`pwd`/.install" /usr
+# }}} awesome build
 
 mkdir -p "$SCRIPT_DIR/.fzf-build"
 cd "$SCRIPT_DIR/.fzf-build"

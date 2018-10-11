@@ -3,20 +3,20 @@
 **Table of Contents**  *generated with [DocToc](http://doctoc.herokuapp.com/)*
 
 - [awesome-cyclefocus](#awesome-cyclefocus)
-	- [Screenshot](#screenshot)
-	- [Installation](#installation)
-	- [Keybindings](#keybindings)
-		- [Example 1: cycle through all windows](#example-1-cycle-through-all-windows)
-		- [Example 2: cycle through windows on the same screen and tag](#example-2-cycle-through-windows-on-the-same-screen-and-tag)
-			- [`cycle_filters`](#cycle_filters)
-			- [Prefefined filters](#prefefined-filters)
-		- [Example 3: cycle through clients with the same class](#example-3-cycle-through-clients-with-the-same-class)
-	- [Reference](#reference)
-		- [Configuration](#configuration)
-			- [<a name="settings"></a>Settings](#<a-name=settings><a>settings)
-	- [Status](#status)
-		- [Notifications](#notifications)
+  - [Screenshot](#screenshot)
+  - [Installation](#installation)
+  - [Keybindings](#keybindings)
+    - [Example 1: cycle through all windows](#example-1-cycle-through-all-windows)
+    - [Example 2: cycle through windows on the same screen and tag](#example-2-cycle-through-windows-on-the-same-screen-and-tag)
+      - [`cycle_filters`](#cycle_filters)
+      - [Predefined filters](#predefined-filters)
+    - [Example 3: cycle through clients with the same class](#example-3-cycle-through-clients-with-the-same-class)
+  - [Reference](#reference)
+    - [Configuration](#configuration)
+      - [<a name="settings"></a>Settings](#a-namesettingsasettings)
+  - [Status](#status)
 - [Bugs, Feedback and Support](#bugs-feedback-and-support)
+  - [Donate](#donate)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -38,7 +38,7 @@ like screenshots…
 
 ## Installation
 
-*Requirements:* awesome-cyclefocus requires Awesome 3.5+.
+*Requirements:* awesome-cyclefocus requires Awesome 4+.
 
 Create a subdirectory `cyclefocus` in your awesome config directory, e.g.
 
@@ -56,8 +56,8 @@ local cyclefocus = require('cyclefocus')
 
 Then you can define the keybindings.
 
-While you can use it with the `globalkeys`, the `clientkeys` table is required for any
-bindings which use `cycle_filters`.
+While you can use it with the `globalkeys` configuation, you should use
+the `clientkeys` table for any bindings which use `cycle_filters`.
 
 The default for `modkey+Tab` in awesome (3.5.2) is:
 ```lua
@@ -69,48 +69,43 @@ awful.key({ modkey,           }, "Tab",
         end
     end),
 ```
-You should disable it (e.g. by commenting it), and put your method below (or in the same block).
-(However, this would be in the `globalkeys` block, which is only useful for the mapping to cycle
-through all windows.)
+You should disable it (e.g. by commenting it out), and add your method below.
 
 Here are three methods to setup the key mappings:
 
 ### Example 1: cycle through all windows
 
-Setup `modkey+Tab` to cycle through all windows (assuming modkey is
+Setup `modkey+Tab` to cycle through all windows (assuming `modkey` is
 `Mod4`/`Super_L`, which is the default):
 
 ```lua
 -- modkey+Tab: cycle through all clients.
-awful.key({ modkey,         }, "Tab", function(c)
-        cyclefocus.cycle(1, {modifier="Super_L"})
+awful.key({ modkey }, "Tab", function(c)
+    cyclefocus.cycle({modifier="Super_L"})
 end),
 -- modkey+Shift+Tab: backwards
 awful.key({ modkey, "Shift" }, "Tab", function(c)
-        cyclefocus.cycle(-1, {modifier="Super_L"})
+    cyclefocus.cycle({modifier="Super_L"})
 end),
 ```
 
-The first argument to `cyclefocus.cycle` is the starting direction: 1 means
-backwards in history (incrementing index for the history stack), -1 means to go
-in the opposite direction. `1` is the normal behavior, while `-1` refers to the
-shifted version.
+You can pass a table of optional arguments.
+We need to pass the modifier (as seen by awesome's `keygrabber`) here.
+Internally the direction gets set according to if the `Shift` modifier key
+is present, so that the second definition is only necessary to trigger it in
+the opposite direction from the beginning.
 
-The second argument is a table of optional arguments. We need to pass the
-modifier being used (as seen by awesome's `keygrabber`) here.
-
-See the `init.lua` file for a full reference, or refer to the [settings section
-below](#settings).
+See the `init.lua` file (or the [settings section below](#settings)) for a full
+reference.
 
 ### Example 2: cycle through windows on the same screen and tag
 
-There is a helper function `cyclefocus.key`, which can be used instead of
-`awful.key` (it is a wrapper):
+You can use `cyclefocus.key` (a wrapper around `awful.key`) like this:
 
 ```lua
 -- Alt-Tab: cycle through clients on the same screen.
 -- This must be a clientkeys mapping to have source_c available in the callback.
-cyclefocus.key({ "Mod1", }, "Tab", 1, {
+cyclefocus.key({ "Mod1", }, "Tab", {
     -- cycle_filters as a function callback:
     -- cycle_filters = { function (c, source_c) return c.screen == source_c.screen end },
 
@@ -120,10 +115,13 @@ cyclefocus.key({ "Mod1", }, "Tab", 1, {
 }),
 ```
 
-The first two arguments are the same as with `awful.key`: a list of modifiers and
-the key. Then follows the direction and the list of optional arguments again.
-(here the `modifier` argument is not required, because it is given in the first
-argument).
+The first two arguments are the same as with `awful.key`: a list of modifiers
+and the key. Then the table with optional arguments to `cyclefocus.cycle()`
+follows.
+(here the `modifier` argument is not required, because it gets used from
+the first argument).
+
+NOTE: this needs to go into `clientkeys`.
 
 #### `cycle_filters`
 
@@ -136,9 +134,9 @@ For the source client to be available, it needs to be an entry in the
 
 You can pass functions here, or use one of the predefined filters:
 
-#### Prefefined filters
+#### Predefined filters
 
-The following filters are predefined, and can be used (as with the example above):
+The following filters are available by default:
 
 ```lua
 -- A set of default filters, which can be used for cyclefocus.cycle_filters.
@@ -169,9 +167,6 @@ cyclefocus.filters = {
 }
 ```
 
-NOTE: this list is likely to change in the beginning. Please consider
-submitting any custom filters you come up with to the [Github issue tracker][].
-
 ### Example 3: cycle through clients with the same class
 
 The following will cycle through windows, which share the same window class
@@ -194,11 +189,12 @@ below Escape, above Tab and next to the first digit (1).
 It should be the same shortcut, as what Ubuntu's Unity uses to cycle through
 the windows of a single application.
 
-NOTE: You need to pass the keys this refers to via the `keys` argument. This is
-required for the keygrabber to only consider those.
+NOTE: You need to pass the keys this refers to via the `keys` argument, so that
+the keygrabber considers those only.
 In the example above, `^` and `°` refers to the key on the German keyboard
 layout (un-shifted and shifted, i.e. with Shift pressed and released).
 
+NOTE: this needs to go into `clientkeys`.
 
 ## Reference
 
@@ -208,43 +204,41 @@ awesome-cyclefocus can be configured by passing optional arguments to the
 `cyclefocus.cycle` or `cyclefocus.key` functions, or by setting defaults, after
 loading `cyclefocus`:
 
-
 #### <a name="settings"></a>Settings
 
 The default settings are:
 
 ```lua
 cyclefocus = {
-    -- Should clients be raised during cycling?
-    raise_clients = true,
-    -- Should clients be focused during cycling?
+    -- Should clients get shown during cycling?
+    -- This should be a function (or `false` to disable showing clients), which
+    -- receives a client object, and can make use of cyclefocus.show_client
+    -- (the default implementation).
+    show_clients = true,
+    -- Should clients get focused during cycling?
+    -- This is required for the tasklist to highlight the selected entry.
     focus_clients = true,
 
     -- How many entries should get displayed before and after the current one?
-    display_next_count = 2,
-    display_prev_count = 2,  -- only 0 for prev, works better with naughty notifications.
+    display_next_count = 3,
+    display_prev_count = 3,
 
-    -- Preset to be used for the notification.
-    naughty_preset = {
-        position = 'top_left',
-        timeout = 0,
-    },
+    -- Default preset to for entries.
+    -- `preset_for_offset` (below) gets added to it.
+    default_preset = {},
 
-    naughty_preset_for_offset = {
-        -- Default callback, which will be applied for all offsets (first).
+    --- Templates for entries in the list.
+    -- The following arguments get passed to a callback:
+    --  - client: the current client object.
+    --  - idx: index number of current entry in clients list.
+    --  - displayed_list: the list of entries in the list, possibly filtered.
+    preset_for_offset = {
+        -- Default callback, which will gets applied for all offsets (first).
         default = function (preset, args)
             -- Default font and icon size (gets overwritten for current/0 index).
             preset.font = 'sans 8'
             preset.icon_size = 36
-            preset.text = escape_markup(cyclefocus.get_object_name(args.client))
-
-            -- Display the notification on the current screen (mouse).
-            preset.screen = capi.mouse.screen
-
-            -- Set notification width, based on screen/workarea width.
-            local s = preset.screen
-            local wa = capi.screen[s].workarea
-            preset.width = floor(wa.width * 0.618)
+            preset.text = escape_markup(cyclefocus.get_client_title(args.client, false))
 
             preset.icon = cyclefocus.icon_loader(args.client.icon)
         end,
@@ -253,30 +247,41 @@ cyclefocus = {
         ["0"] = function (preset, args)
             preset.font = 'sans 12'
             preset.icon_size = 48
-            -- Use get_object_name to handle .name=nil.
-            preset.text = escape_markup(cyclefocus.get_object_name(args.client))
-            -- Add screen number if there are multiple.
+            preset.text = escape_markup(cyclefocus.get_client_title(args.client, true))
+            -- Add screen number if there is more than one.
             if screen.count() > 1 then
-                preset.text = preset.text .. " [screen " .. args.client.screen .. "]"
+                preset.text = preset.text .. " [screen " .. tostring(args.client.screen.index) .. "]"
             end
             preset.text = preset.text .. " [#" .. args.idx .. "] "
             preset.text = '<b>' .. preset.text .. '</b>'
         end,
 
         -- You can refer to entries by their offset.
-        ["-1"] = function (preset, args)
-            -- preset.icon_size = 32
-        end,
-        ["1"] = function (preset, args)
-            -- preset.icon_size = 32
-        end
+        -- ["-1"] = function (preset, args)
+        --     -- preset.icon_size = 32
+        -- end,
+        -- ["1"] = function (preset, args)
+        --     -- preset.icon_size = 32
+        -- end
     },
 
     -- Default builtin filters.
-    -- These are meant to get applied always, but you could override them.
+    -- (meant to get applied always, but you could override them)
     cycle_filters = {
-        function(c, source_c) return not c.minimized end,
+        function(c, source_c) return not c.minimized end,  --luacheck: no unused args
     },
+
+    -- EXPERIMENTAL: only add clients to the history that have been focused by
+    -- cyclefocus.
+    -- This allows to switch clients using other methods, but those are then
+    -- not added to cyclefocus' internal history.
+    -- The get_next_client function will then first consider the most recent
+    -- entry in the history stack, if it's not focused currently.
+    --
+    -- You can use cyclefocus.history.add to manually add an entry, or
+    -- cyclefocus.history.append if you want to add it to the end of the stack.
+    -- This might be useful in a request::activate signal handler.
+    -- only_add_internal_focus_changes_to_history = true,
 
     -- The filter to ignore clients altogether (get not added to the history stack).
     -- This is different from the cycle_filters.
@@ -319,24 +324,20 @@ cyclefocus.key({ modkey, "Shift", }, "Tab", 1, {
 
 ## Status
 
-This is to be considered stable: It works for well for me and others.
+Stable: it works well for me and others.
 Internals, default settings and behavior might still change.
 
 I came up with this while dipping my toes in the waters of awesome. If you have
 problems, please enable `cyclefocus.debug_level` (goes up to 3) and report your
 findings on the [Github issue tracker][].
 
-### Notifications
-
-The notifications while cycling are displayed using `naughty.notify`.
-This needs to be replaced and/or improved upon.
-The text to be displayed should be made customizable also.
-
 # Bugs, Feedback and Support
 
 You can report bugs and wishes at the [Github issue tracker][].
 
 Pull requests would be awesome! :)
+
+## Donate
 
 [![Flattr this git repo](http://api.flattr.com/button/flattr-badge-large.png)](https://flattr.com/submit/auto?user_id=blueyed&url=https://github.com/blueyed/awesome-cyclefocus&title=awesome-cyclefocus&language=en&tags=github&category=software)
 
