@@ -4,7 +4,7 @@ export EDITOR='setsid emacs'
 export VISUAL='setsid emacs'
 export PAGER='less'
 export FZF_DEFAULT_OPTS="--bind=ctrl-j:down,ctrl-k:up,alt-j:down,alt-k:up,ctrl-s:kill-line"
-export FZF_DEFAULT_COMMAND='fd --hidden --no-ignore-vcs --color never'
+export FZF_DEFAULT_COMMAND='fd --hidden --no-ignore-vcs --color never --type f'
 
 if [[ -z "$LANG" ]]; then
   export LANG='en_US.UTF-8'

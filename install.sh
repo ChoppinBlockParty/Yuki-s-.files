@@ -23,7 +23,7 @@ function export_clang_toolchain {
 }
 
 function install_file {
-  local new_filepath="${2:-"$INSTALL_PREFIX"}/$(basename "$1")"
+  local new_filepath="${2:-"$INSTALL_PREFIX"}/${3:-$(basename "$1")}"
   if [[ -f $new_filepath ]]; then
     if [[ $(realpath $new_filepath) = $1 ]]; then
       echo "  -- Does not install \"$1\": \"$new_filepath\" exists"
@@ -197,6 +197,7 @@ install_file "$SCRIPT_DIR/.gitconfig_ignore"
 
 install_file "$SCRIPT_DIR/.clang-format"
 install_file "$SCRIPT_DIR/.ignore"
+install_file "$SCRIPT_DIR/.ignore" "$INSTALL_PREFIX" ".fdignore"
 install_file "$SCRIPT_DIR/.Xresources"
 install_file "$SCRIPT_DIR/.ycm_extra_conf.py"
 install_dir "$SCRIPT_DIR/awesome" "$INSTALL_PREFIX/.config"
