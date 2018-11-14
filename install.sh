@@ -10,14 +10,17 @@ RG_VERSION=0.10.0
 FD_VERSION=7.1.0
 
 function export_clang_toolchain {
-  export CC=clang-7
-  export CXX=clang++-7
-  export AR=llvm-ar-7
-  export RANLIB=llvm-ranlib-7
-  export CFLAGS='-O3 -fomit-frame-pointer -fstrict-aliasing -flto -pthread'
-  export CXXFLAGS='-O3 -fomit-frame-pointer -fstrict-aliasing -flto -pthread'
-  export LDFLAGS='-flto -pthread'
-  sudo rm /usr/bin/ld; sudo ln -s /usr/bin/x86_64-linux-gnu-ld.gold  /usr/bin/ld
+  # export CC=clang-7
+  # export CXX=clang++-7
+  # export AR=llvm-ar-7
+  # export RANLIB=llvm-ranlib-7
+  # export CFLAGS='-O3 -fomit-frame-pointer -fstrict-aliasing -flto -pthread'
+  # export CXXFLAGS='-O3 -fomit-frame-pointer -fstrict-aliasing -flto -pthread'
+  # export LDFLAGS='-flto -pthread'
+  export CFLAGS='-O3 -fomit-frame-pointer -fstrict-aliasing -pthread'
+  export CXXFLAGS='-O3 -fomit-frame-pointer -fstrict-aliasing -pthread'
+  export LDFLAGS='-pthread'
+  # sudo rm /usr/bin/ld; sudo ln -s /usr/bin/x86_64-linux-gnu-ld.gold  /usr/bin/ld
   # FIXME: Find a way to make it automatically
   # sudo rm /usr/bin/ld; sudo ln -s /usr/bin/x86_64-linux-gnu-ld.bfd  /usr/bin/ld
 }
@@ -72,58 +75,7 @@ function clone_update_git_repo {
 mkdir -p "$BIN_INSTALL_PREFIX"
 
 
-# {{{ awesome build
-mkdir -p "$SCRIPT_DIR/.xcb-util-xrm-build"
-cd "$SCRIPT_DIR/.xcb-util-xrm-build"
-clone_update_git_repo https://github.com/Airblader/xcb-util-xrm
-if [[ ! -d "`pwd`/.install" ]]; then
-  make clean || true
-  ./autogen.sh
-  ./configure --prefix="`pwd`/.install" --enable-shared=no --enable-static=yes
-  make
-  make install
-fi
-
 export_clang_toolchain
-
-sudo apt-get -y install --no-install-recommends \
-       lua5.2 \
-       liblua5.2-dev \
-       lua-lgi-dev \
-       asciidoctor \
-       libxcb-cursor-dev \
-       libxcb-randr0-dev \
-       libxcb-xtest0-dev \
-       libxcb-xinerama0-dev \
-       libxcb-util-dev \
-       libxcb-keysyms1-dev \
-       libxcb-icccm4-dev \
-       libxcb-shape0-dev \
-       libxcb-xkb-dev \
-       libxkbcommon-x11-dev \
-       libstartup-notification0-dev \
-       libxdg-basedir-dev
-
-mkdir -p "$SCRIPT_DIR/.awesome-build"
-cd "$SCRIPT_DIR/.awesome-build"
-clone_update_git_repo https://github.com/awesomeWM/awesome
-
-if [[ ! -d "`pwd`/.install" ]]; then
-  rm -rf .build 2 > /dev/null || true
-  mkdir .build
-  cd .build
-  export PKG_CONFIG_PATH="$SCRIPT_DIR/.xcb-util-xrm-build/xcb-util-xrm/.install/lib/pkgconfig"
-  cmake -GNinja \
-        -DCMAKE_INSTALL_PREFIX="`pwd`/../.install" \
-        -DCMAKE_BUILD_TYPE=Release \
-        -DCMAKE_PREFIX_PATH="$SCRIPT_DIR/.xcb-util-xrm-build/xcb-util-xrm/.install/lib/pkgconfig" \
-        ../
-  ninja
-  ninja install
-  cd -
-fi
-sudo rsync -a "`pwd`/.install" /usr
-# }}} awesome build
 
 mkdir -p "$SCRIPT_DIR/.fzf-build"
 cd "$SCRIPT_DIR/.fzf-build"
@@ -163,9 +115,9 @@ mkdir -p "$INSTALL_PREFIX/.config/tmux"
 cd "$INSTALL_PREFIX/.config/tmux"
 
 clone_update_git_repo https://github.com/Morantron/tmux-fingers
-cd - 1 > /dev/null
+cd - 1>/dev/null
 clone_update_git_repo https://github.com/tmux-plugins/tmux-yank
-cd - 1 > /dev/null
+cd - 1>/dev/null
 
 install_file "$SCRIPT_DIR/.tmux.conf"
 
@@ -174,9 +126,9 @@ mkdir -p "$INSTALL_PREFIX/.config/zsh"
 cd "$INSTALL_PREFIX/.config/zsh"
 
 clone_update_git_repo https://github.com/zsh-users/zsh-syntax-highlighting
-cd - 1 > /dev/null
+cd - 1>/dev/null
 clone_update_git_repo https://github.com/zsh-users/zsh-completions
-cd - 1 > /dev/null
+cd - 1>/dev/null
 
 install_file "$SCRIPT_DIR/.zlogin"
 install_file "$SCRIPT_DIR/.zshrc"
@@ -190,7 +142,7 @@ cd "$INSTALL_PREFIX/.config/git"
 
 clone_update_git_repo https://github.com/so-fancy/diff-so-fancy
 install_file "`pwd`/diff-so-fancy" "$BIN_INSTALL_PREFIX"
-cd - 1 > /dev/null
+cd - 1>/dev/null
 
 install_file "$SCRIPT_DIR/.gitconfig"
 install_file "$SCRIPT_DIR/.gitconfig_ignore"
