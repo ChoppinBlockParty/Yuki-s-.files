@@ -489,7 +489,7 @@ eval "$(dircolors --sh)"
 
 # alias e='setsid emacs'
 e() {
-  setsid emacs "$@"
+  setsid env -u HTTPS_PROXY -u HTTP_PROXY -u https_proxy -u http_proxy emacs "$@"
 }
 
 alias sudo='sudo '
@@ -626,7 +626,7 @@ ZSH_HIGHLIGHT_STYLES[path]=fg=218
 # ZSH_HIGHLIGHT_STYLES[comment]:=fg=black,bold}
 ZSH_HIGHLIGHT_STYLES[arg0]=fg=203
 
-source "$SCRIPT_DIR/.extra_aliases"
+source "$SCRIPT_DIR/.zshrc_extra"
 
 if [[ -n $INSIDE_EMACS ]]; then
   export TERM=xterm-256color

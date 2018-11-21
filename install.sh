@@ -137,11 +137,11 @@ cd - 1>/dev/null
 install_file "$SCRIPT_DIR/.zlogin"
 install_file "$SCRIPT_DIR/.zshrc"
 install_file "$SCRIPT_DIR/.zshenv"
-if [[ ! -f "$INSTALL_PREFIX/.extra_aliases" ]]; then
-  touch "$INSTALL_PREFIX/.extra_aliases"
+if [[ ! -f "$INSTALL_PREFIX/.zshrc_extra" ]]; then
+  touch "$INSTALL_PREFIX/.zshrc_extra"
 fi
-if [[ ! -f "$INSTALL_PREFIX/.extra_env" ]]; then
-  touch "$INSTALL_PREFIX/.extra_env"
+if [[ ! -f "$INSTALL_PREFIX/.zshenv_extra" ]]; then
+  touch "$INSTALL_PREFIX/.zshenv_extra"
 fi
 
 mkdir -p "$INSTALL_PREFIX/.config/git"

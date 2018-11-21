@@ -1,3 +1,5 @@
+SCRIPT_DIR="$HOME"
+
 export PATH="$HOME/bin:$PATH"
 export BROWSER='firefox'
 export EDITOR='setsid emacs'
@@ -18,3 +20,5 @@ fi
 if ! pgrep -x -u "${USER}" gpg-agent >/dev/null 2>&1; then
   gpg-connect-agent /bye >/dev/null 2>&1
 fi
+
+source "$SCRIPT_DIR/.zshenv_extra"
