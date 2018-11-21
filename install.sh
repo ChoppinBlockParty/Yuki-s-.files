@@ -9,20 +9,23 @@ FZF_VERSION=0.17.5
 RG_VERSION=0.10.0
 FD_VERSION=7.1.0
 
-function export_clang_toolchain {
-  # export CC=clang-7
-  # export CXX=clang++-7
-  # export AR=llvm-ar-7
-  # export RANLIB=llvm-ranlib-7
-  # export CFLAGS='-O3 -fomit-frame-pointer -fstrict-aliasing -flto -pthread'
-  # export CXXFLAGS='-O3 -fomit-frame-pointer -fstrict-aliasing -flto -pthread'
-  # export LDFLAGS='-flto -pthread'
-  export CFLAGS='-O3 -fomit-frame-pointer -fstrict-aliasing -pthread'
-  export CXXFLAGS='-O3 -fomit-frame-pointer -fstrict-aliasing -pthread'
-  export LDFLAGS='-pthread'
-  # sudo rm /usr/bin/ld; sudo ln -s /usr/bin/x86_64-linux-gnu-ld.gold  /usr/bin/ld
-  # FIXME: Find a way to make it automatically
-  # sudo rm /usr/bin/ld; sudo ln -s /usr/bin/x86_64-linux-gnu-ld.bfd  /usr/bin/ld
+function export_compilation_toolchain {
+  if [[ -x $(command -v clang 2>/dev/null) ]]; then
+    export CC=clang
+    export CXX=clang++
+    export AR=llvm-ar
+    export RANLIB=llvm-ranlib
+    # export CFLAGS='-O3 -fomit-frame-pointer -fstrict-aliasing -flto -pthread'
+    # export CXXFLAGS='-O3 -fomit-frame-pointer -fstrict-aliasing -flto -pthread'
+    # export LDFLAGS='-flto -pthread'
+    # sudo rm /usr/bin/ld; sudo ln -s /usr/bin/x86_64-linux-gnu-ld.gold  /usr/bin/ld
+    # FIXME: Find a way to make it automatically
+    # sudo rm /usr/bin/ld; sudo ln -s /usr/bin/x86_64-linux-gnu-ld.bfd  /usr/bin/ld
+  else
+    export CFLAGS='-O3 -fomit-frame-pointer -fstrict-aliasing -pthread'
+    export CXXFLAGS='-O3 -fomit-frame-pointer -fstrict-aliasing -pthread'
+    export LDFLAGS='-pthread'
+  fi
 }
 
 function install_file {
@@ -74,8 +77,7 @@ function clone_update_git_repo {
 
 mkdir -p "$BIN_INSTALL_PREFIX"
 
-
-export_clang_toolchain
+export_compilation_toolchain
 
 mkdir -p "$SCRIPT_DIR/.fzf-build"
 cd "$SCRIPT_DIR/.fzf-build"
@@ -84,13 +86,6 @@ if [[ ! -f fzf.tgz ]]; then
 fi
 tar -xzf fzf.tgz
 mv -f fzf "$BIN_INSTALL_PREFIX"
-
-mkdir -p "$SCRIPT_DIR/.rg-build"
-cd "$SCRIPT_DIR/.rg-build"
-if [[ ! -f rg.deb ]]; then
-  curl -L "https://github.com/BurntSushi/ripgrep/releases/download/${RG_VERSION}/ripgrep_${RG_VERSION}_amd64.deb" > rg.deb
-fi
-sudo dpkg --install rg.deb
 
 mkdir -p "$SCRIPT_DIR/.ag-build"
 cd "$SCRIPT_DIR/.ag-build"
@@ -104,12 +99,21 @@ if [[ ! -d "`pwd`/.install" ]]; then
 fi
 cp -f "`pwd`/.install/bin/ag" "$BIN_INSTALL_PREFIX"
 
-mkdir -p "$SCRIPT_DIR/.fd-build"
-cd "$SCRIPT_DIR/.fd-build"
-if [[ ! -f fd.deb ]]; then
-  curl -L "https://github.com/sharkdp/fd/releases/download/v${FD_VERSION}/fd_${FD_VERSION}_amd64.deb" > fd.deb
+if [[ -x $(command -v dpkg) ]]; then
+  mkdir -p "$SCRIPT_DIR/.rg-build"
+  cd "$SCRIPT_DIR/.rg-build"
+  if [[ ! -f rg.deb ]]; then
+    curl -L "https://github.com/BurntSushi/ripgrep/releases/download/${RG_VERSION}/ripgrep_${RG_VERSION}_amd64.deb" > rg.deb
+  fi
+  sudo dpkg --install rg.deb
+
+  mkdir -p "$SCRIPT_DIR/.fd-build"
+  cd "$SCRIPT_DIR/.fd-build"
+  if [[ ! -f fd.deb ]]; then
+    curl -L "https://github.com/sharkdp/fd/releases/download/v${FD_VERSION}/fd_${FD_VERSION}_amd64.deb" > fd.deb
+  fi
+  sudo dpkg --install fd.deb
 fi
-sudo dpkg --install fd.deb
 
 mkdir -p "$INSTALL_PREFIX/.config/tmux"
 cd "$INSTALL_PREFIX/.config/tmux"
@@ -136,6 +140,9 @@ install_file "$SCRIPT_DIR/.zshenv"
 if [[ ! -f "$INSTALL_PREFIX/.extra_aliases" ]]; then
   touch "$INSTALL_PREFIX/.extra_aliases"
 fi
+if [[ ! -f "$INSTALL_PREFIX/.extra_env" ]]; then
+  touch "$INSTALL_PREFIX/.extra_env"
+fi
 
 mkdir -p "$INSTALL_PREFIX/.config/git"
 cd "$INSTALL_PREFIX/.config/git"
@@ -146,6 +153,10 @@ cd - 1>/dev/null
 
 install_file "$SCRIPT_DIR/.gitconfig"
 install_file "$SCRIPT_DIR/.gitconfig_ignore"
+if [[ ! -f "$INSTALL_PREFIX/.gitconfig_extra" ]]; then
+  echo -n "  -- "
+  cp -v "$SCRIPT_DIR/.gitconfig_extra" "$INSTALL_PREFIX/.gitconfig_extra"
+fi
 
 install_file "$SCRIPT_DIR/.clang-format"
 install_file "$SCRIPT_DIR/.ignore"
