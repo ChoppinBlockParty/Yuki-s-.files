@@ -1,6 +1,6 @@
 [user]
-	name = Yuki
-	email = choppin.block.party@github.com
+  name = Yuki
+  email = choppin.block.party@github.com
 [http]
   sslVerify = true
   slCAinfo = /etc/ssl/certs/ca-certificates.crt
