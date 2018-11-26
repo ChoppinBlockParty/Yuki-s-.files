@@ -59,6 +59,10 @@ clone_update_git_repo https://github.com/llvm-mirror/compiler-rt $BRANCH
 cd "$SCRIPT_DIR/llvm"
 mkdir -p .build
 cd .build
-cmake -DCMAKE_BUILD_TYPE=Release -DLLVM_ENABLE_LTO=ON -DCMAKE_INSTALL_PREFIX=/usr/local ../
+### Need `-DLLVM_USE_LINKER=gold` to enable `-flto` flag
+cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr/local -DLLVM_USE_LINKER=gold ../
 make -j 4
 sudo make install
+
+echo "/usr/local/lib" | sudo tee /etc/ld.so.conf.d/my-usr-local.conf
+sudo ldconfig
