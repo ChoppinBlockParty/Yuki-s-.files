@@ -2,6 +2,8 @@
 
 set -e
 
+sudo apt-get install -y --no-install-recommends curl automake libpcre3-dev pkg-config liblzma-dev zlib1g-dev
+
 SCRIPT_DIR="$(realpath -s "$(dirname "$0")")"
 INSTALL_PREFIX="${INSTALL_PREFIX:-`realpath -s $HOME`}"
 BIN_INSTALL_PREFIX="$INSTALL_PREFIX/bin"
@@ -141,6 +143,7 @@ fi
 if [[ ! -f "$INSTALL_PREFIX/.zshenv_extra" ]]; then
   touch "$INSTALL_PREFIX/.zshenv_extra"
 fi
+chsh -s /usr/bin/zsh yuki
 
 mkdir -p "$INSTALL_PREFIX/.config/git"
 cd "$INSTALL_PREFIX/.config/git"
