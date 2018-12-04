@@ -9,6 +9,10 @@ FZF_VERSION=0.17.5
 RG_VERSION=0.10.0
 FD_VERSION=7.1.0
 
+export CFLAGS='-O3 -fomit-frame-pointer -fstrict-aliasing -pthread'
+export CXXFLAGS='-O3 -fomit-frame-pointer -fstrict-aliasing -pthread'
+export LDFLAGS='-pthread'
+
 # ## -flto required ld.gold, otherwise results in segmentation faults
 # # Set ld.gold as default
 # sudo rm /usr/bin/ld; sudo ln -s /usr/bin/x86_64-linux-gnu-ld.gold  /usr/bin/ld
@@ -19,11 +23,10 @@ if [[ -x $(command -v clang 2>/dev/null) ]]; then
   export CXX=clang++
   export AR=llvm-ar
   export RANLIB=llvm-ranlib
+  export CFLAGS="$CFLAGS -flto"
+  export CXXFLAGS="$CXXFLAGS -flto"
+  export LDFLAGS="$LDFLAGS -flto"
 fi
-
-export CFLAGS='-O3 -fomit-frame-pointer -fstrict-aliasing -pthread'
-export CXXFLAGS='-O3 -fomit-frame-pointer -fstrict-aliasing -pthread'
-export LDFLAGS='-pthread'
 
 function install_file {
   local new_filepath="${2:-"$INSTALL_PREFIX"}/${3:-$(basename "$1")}"
