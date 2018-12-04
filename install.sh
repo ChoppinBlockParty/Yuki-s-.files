@@ -1,7 +1,6 @@
 #! /usr/bin/env bash
 
 set -e
-set +x
 
 SCRIPT_DIR="$(realpath -s "$(dirname "$0")")"
 INSTALL_PREFIX="${INSTALL_PREFIX:-`realpath -s $HOME`}"
@@ -10,24 +9,21 @@ FZF_VERSION=0.17.5
 RG_VERSION=0.10.0
 FD_VERSION=7.1.0
 
-function export_compilation_toolchain {
-  if [[ -x $(command -v clang 2>/dev/null) ]]; then
-    export CC=clang
-    export CXX=clang++
-    export AR=llvm-ar
-    export RANLIB=llvm-ranlib
-    # export CFLAGS='-O3 -fomit-frame-pointer -fstrict-aliasing -flto -pthread'
-    # export CXXFLAGS='-O3 -fomit-frame-pointer -fstrict-aliasing -flto -pthread'
-    # export LDFLAGS='-flto -pthread'
-    # sudo rm /usr/bin/ld; sudo ln -s /usr/bin/x86_64-linux-gnu-ld.gold  /usr/bin/ld
-    # FIXME: Find a way to make it automatically
-    # sudo rm /usr/bin/ld; sudo ln -s /usr/bin/x86_64-linux-gnu-ld.bfd  /usr/bin/ld
-  else
-    export CFLAGS='-O3 -fomit-frame-pointer -fstrict-aliasing -pthread'
-    export CXXFLAGS='-O3 -fomit-frame-pointer -fstrict-aliasing -pthread'
-    export LDFLAGS='-pthread'
-  fi
-}
+# ## -flto required ld.gold, otherwise results in segmentation faults
+# # Set ld.gold as default
+# sudo rm /usr/bin/ld; sudo ln -s /usr/bin/x86_64-linux-gnu-ld.gold  /usr/bin/ld
+# # Restore ld.bfd
+# sudo rm /usr/bin/ld; sudo ln -s /usr/bin/x86_64-linux-gnu-ld.bfd  /usr/bin/ld
+if [[ -x $(command -v clang 2>/dev/null) ]]; then
+  export CC=clang
+  export CXX=clang++
+  export AR=llvm-ar
+  export RANLIB=llvm-ranlib
+fi
+
+export CFLAGS='-O3 -fomit-frame-pointer -fstrict-aliasing -pthread'
+export CXXFLAGS='-O3 -fomit-frame-pointer -fstrict-aliasing -pthread'
+export LDFLAGS='-pthread'
 
 function install_file {
   local new_filepath="${2:-"$INSTALL_PREFIX"}/${3:-$(basename "$1")}"
@@ -77,8 +73,6 @@ function clone_update_git_repo {
 }
 
 mkdir -p "$BIN_INSTALL_PREFIX"
-
-export_compilation_toolchain
 
 mkdir -p "$SCRIPT_DIR/.fzf-build"
 cd "$SCRIPT_DIR/.fzf-build"

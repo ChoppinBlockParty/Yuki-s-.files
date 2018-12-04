@@ -3,6 +3,8 @@
 set -e
 set +x
 
+sudo apt-get install --no-install-recommends -y binutils-dev
+
 SCRIPT_DIR="$(realpath -s "$(dirname "$0")")"
 BRANCH=release_70
 
@@ -60,7 +62,7 @@ cd "$SCRIPT_DIR/llvm"
 mkdir -p .build
 cd .build
 ### Need `-DLLVM_USE_LINKER=gold` to enable `-flto` flag
-cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr/local -DLLVM_USE_LINKER=gold ../
+cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr/local -DLLVM_USE_LINKER=gold -DLLVM_BINUTILS_INCDIR=/usr/include ../
 make -j 4
 sudo make install
 
