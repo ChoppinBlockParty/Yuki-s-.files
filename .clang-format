@@ -1,12 +1,11 @@
 Language:        Cpp
 DisableFormat:   false
-AccessModifierOffset: -2
 
 AlignAfterOpenBracket: Align
 AlignConsecutiveAssignments: false
 AlignConsecutiveDeclarations: false
 AlignEscapedNewlinesLeft: false
-AlignOperands: false
+AlignOperands: true
 AlignTrailingComments: false
 
 AllowAllParametersOfDeclarationOnNextLine: true
@@ -14,7 +13,7 @@ AllowShortBlocksOnASingleLine: false
 AllowShortCaseLabelsOnASingleLine: false
 AllowShortIfStatementsOnASingleLine: false
 AllowShortLoopsOnASingleLine: false
-AllowShortFunctionsOnASingleLine: All
+AllowShortFunctionsOnASingleLine: false
 
 AlwaysBreakAfterDefinitionReturnType: None
 AlwaysBreakTemplateDeclarations: true
@@ -36,21 +35,22 @@ BraceWrapping:
   BeforeElse: true
   IndentBraces: true
 
-BreakBeforeBinaryOperators: true
+BreakBeforeBinaryOperators: NonAssignment
 BreakBeforeBraces: Attach
 BreakBeforeTernaryOperators: true
-BreakConstructorInitializersBeforeComma: false
+BreakConstructorInitializers: BeforeColon
+ConstructorInitializerAllOnOneLineOrOnePerLine: true
 BreakStringLiterals: false
 
-ColumnLimit:     90
-ConstructorInitializerIndentWidth: 2
+ColumnLimit:     120
 ContinuationIndentWidth: 2
 Standard:        Cpp11
 IndentWidth:     2
 TabWidth:        2
 UseTab:          Never
+AccessModifierOffset: -2
+ConstructorInitializerIndentWidth: 2
 
-ConstructorInitializerAllOnOneLineOrOnePerLine: false
 Cpp11BracedListStyle: true
 
 IndentCaseLabels: false
@@ -65,12 +65,13 @@ KeepEmptyLinesAtTheStartOfBlocks: true
 ObjCSpaceAfterProperty: false
 ObjCSpaceBeforeProtocolList: true
 
-PenaltyBreakBeforeFirstCallParameter: 19
+PenaltyBreakAssignment: 1000
+PenaltyBreakBeforeFirstCallParameter: 100
 PenaltyBreakComment: 300
 PenaltyBreakString: 1000
 PenaltyBreakFirstLessLess: 120
-PenaltyExcessCharacter: 1000000
-PenaltyReturnTypeOnItsOwnLine: 60
+PenaltyExcessCharacter: 400
+PenaltyReturnTypeOnItsOwnLine: 0
 
 SpaceAfterCStyleCast: false
 SpacesBeforeTrailingComments: 1
@@ -86,5 +87,5 @@ SpaceBeforeParens: ControlStatements
 SpacesInSquareBrackets: false
 
 PointerAlignment: Left
-ReflowComments: false
+ReflowComments: true
 SortIncludes: true
