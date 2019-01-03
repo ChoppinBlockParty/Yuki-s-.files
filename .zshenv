@@ -1,6 +1,6 @@
 SCRIPT_DIR="$HOME"
 
-export PATH="$HOME/bin:$PATH"
+export PATH="$HOME/bin:$HOME/.yarn/bin:$PATH"
 export BROWSER='firefox'
 export EDITOR='setsid emacs'
 export VISUAL='setsid emacs'
