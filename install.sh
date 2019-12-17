@@ -2,7 +2,7 @@
 
 set -e
 
-sudo apt-get install -y --no-install-recommends curl automake libpcre3-dev pkg-config liblzma-dev zlib1g-dev
+sudo apt-get install -y --no-install-recommends rxvt-unicode zsh zsh-common tmux curl automake libpcre3-dev pkg-config liblzma-dev zlib1g-dev
 
 SCRIPT_DIR="$(realpath -s "$(dirname "$0")")"
 INSTALL_PREFIX="${INSTALL_PREFIX:-`realpath -s $HOME`}"

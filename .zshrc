@@ -629,7 +629,8 @@ ZSH_HIGHLIGHT_STYLES[arg0]=fg=203
 source "$SCRIPT_DIR/.zshrc_extra"
 
 if [[ -n $INSIDE_EMACS ]]; then
-  export TERM=xterm-256color
+  # export TERM=xterm-256color
+  # export COLORTERM=1
   # This shell runs inside an Emacs *shell*/*term* buffer.
   # Have to unset zle, it messes up with Emacs buffer.
   unsetopt zle
