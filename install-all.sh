@@ -7,9 +7,13 @@ set -e
 
 cd ../
 
-git clone git@github.com:choppinblockparty/yuki-s-dwm dwm
-
-yuki-s-dwm
+if [[-d dwm]]; then
+  git clone https://github.com/choppinblockparty/yuki-s-dwm dwm
+  cd dwm
+else
+  cd dwm
+  git pull
+fi
 
 ./install.sh
 
