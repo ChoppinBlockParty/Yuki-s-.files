@@ -17,6 +17,22 @@ fi
 
 ./install.sh
 
+cd ../../
+
+if [[-d .emacs.d]]; then
+  git clone https://github.com/choppinblockparty/yuki-s-.emacs.d .emacs.d
+  cd .emacs.d
+else
+  cd .emacs.d
+  git pull
+fi
+
+cd .emacs.d
+
+./tools/install-prerequisits.sh
+
+./tools/build-emacs.sh /opt
+
 # for now disable, have troubles finding why the system startup fails
 exit 0
 

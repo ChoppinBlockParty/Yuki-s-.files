@@ -80,9 +80,9 @@ function clone_update_git_repo {
 
 mkdir -p "$BIN_INSTALL_PREFIX"
 
-curl -LO  'https://github.com/powerline/fonts/raw/master/Inconsolata-g/Inconsolata-g for Powerline.otf'
+curl -LO  'https://github.com/powerline/fonts/raw/master/Inconsolata-g/Inconsolata-g%20for%20Powerline.otf'
 mkdir -p ~/.local/share/fonts
-mv -f 'Inconsolata-g for Powerline.otf' ~/.local/share/fonts
+mv -f 'Inconsolata-g%20for%20Powerline.otf' '~/.local/share/fonts/Inconsolata-g for Powerline.otf'
 sudo fc-cache -f
 
 mkdir -p "$SCRIPT_DIR/.fzf-build"
