@@ -2,12 +2,12 @@
 
 set -e
 
-sudo apt-get install -y --no-install-recommends rxvt-unicode zsh zsh-common tmux curl automake libpcre3-dev pkg-config liblzma-dev zlib1g-dev
+sudo apt-get install -y --no-install-recommends rxvt-unicode zsh zsh-common tmux curl clang-8 automake cmake libpcre3-dev pkg-config liblzma-dev zlib1g-dev
 
 SCRIPT_DIR="$(realpath -s "$(dirname "$0")")"
 INSTALL_PREFIX="${INSTALL_PREFIX:-`realpath -s $HOME`}"
 BIN_INSTALL_PREFIX="$INSTALL_PREFIX/bin"
-FZF_VERSION=0.17.5
+FZF_VERSION=0.21.1
 RG_VERSION=0.10.0
 FD_VERSION=7.1.0
 
