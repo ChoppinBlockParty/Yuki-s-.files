@@ -5,6 +5,8 @@ set -e
 ./build-llvm.sh
 ./install.sh
 
+cd ../
+
 git clone git@github.com:choppinblockparty/yuki-s-dwm dwm
 
 yuki-s-dwm
