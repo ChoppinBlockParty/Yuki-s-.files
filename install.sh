@@ -3,7 +3,7 @@
 set -e
 set +x
 
-sudo apt-get install -y --no-install-recommends rxvt-unicode zsh zsh-common tmux curl clang-8 automake cmake libpcre3-dev pkg-config liblzma-dev zlib1g-dev
+sudo apt-get install -y --no-install-recommends rxvt-unicode zsh zsh-common tmux curl clang-8 automake cmake libpcre3-dev pkg-config liblzma-dev zlib1g-dev xsel
 
 SCRIPT_DIR="$(realpath -s "$(dirname "$0")")"
 INSTALL_PREFIX="${INSTALL_PREFIX:-`realpath -s $HOME`}"
@@ -82,7 +82,7 @@ mkdir -p "$BIN_INSTALL_PREFIX"
 
 curl -LO  'https://github.com/powerline/fonts/raw/master/Inconsolata-g/Inconsolata-g%20for%20Powerline.otf'
 mkdir -p ~/.local/share/fonts
-mv -f 'Inconsolata-g%20for%20Powerline.otf' '~/.local/share/fonts/Inconsolata-g for Powerline.otf'
+mv -f Inconsolata-g%20for%20Powerline.otf ~/.local/share/fonts/Inconsolata-g\ for\ Powerline.otf
 sudo fc-cache -f
 
 mkdir -p "$SCRIPT_DIR/.fzf-build"

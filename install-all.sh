@@ -1,13 +1,14 @@
 #! /usr/bin/env bash
 
 set -e
+set -x
 
 ./build-llvm.sh
 ./install.sh
 
 cd ../
 
-if [[-d dwm]]; then
+if [[ ! -d dwm ]]; then
   git clone https://github.com/choppinblockparty/yuki-s-dwm dwm
   cd dwm
 else
@@ -17,17 +18,15 @@ fi
 
 ./install.sh
 
-cd ../../
+cd ~
 
-if [[-d .emacs.d]]; then
+if [[ ! -d .emacs.d ]]; then
   git clone https://github.com/choppinblockparty/yuki-s-.emacs.d .emacs.d
   cd .emacs.d
 else
   cd .emacs.d
   git pull
 fi
-
-cd .emacs.d
 
 ./tools/install-prerequisits.sh
 
