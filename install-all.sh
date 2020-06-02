@@ -32,10 +32,14 @@ fi
 
 ./tools/build-emacs.sh /opt
 
-# for now disable, have troubles finding why the system startup fails
-exit 0
+cd ~/yuki
 
-sudo cp -f etc/startup-service.sh  /etc
-sudo cp -f etc/startup.service /etc/systemd/system
-sudo systemctl enable startup
-sudo systemctl start startup
+if [[ ! -d keyboard-hook ]]; then
+  git clone https://github.com/ChoppinBlockParty/keyboard-hook.git
+  cd keyboard-hook
+else
+  cd keyboard-hook
+  git pull
+fi
+
+./install.sh

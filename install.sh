@@ -9,8 +9,8 @@ SCRIPT_DIR="$(realpath -s "$(dirname "$0")")"
 INSTALL_PREFIX="${INSTALL_PREFIX:-`realpath -s $HOME`}"
 BIN_INSTALL_PREFIX="$INSTALL_PREFIX/bin"
 FZF_VERSION=0.21.1
-RG_VERSION=0.10.0
-FD_VERSION=7.1.0
+RG_VERSION=12.1.1
+FD_VERSION=8.1.1
 
 export CFLAGS='-O3 -fomit-frame-pointer -fstrict-aliasing -pthread'
 export CXXFLAGS='-O3 -fomit-frame-pointer -fstrict-aliasing -pthread'
