@@ -30,7 +30,7 @@ fi
 
 ./tools/install-prerequisits.sh
 
-./tools/build-emacs.sh /opt
+./tools/install-emacs.sh /opt
 
 cd ~/yuki
 
