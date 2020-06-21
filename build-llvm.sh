@@ -65,7 +65,7 @@ mkdir -p .build
 cd .build
 ### Need `-DLLVM_USE_LINKER=gold` to enable `-flto` flag
 cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr/local -DLLVM_USE_LINKER=gold -DLLVM_BINUTILS_INCDIR=/usr/include ../
-make -j `nproc`
+make -j $NPROC
 sudo make install
 
 echo "/usr/local/lib" | sudo tee /etc/ld.so.conf.d/my-usr-local.conf
