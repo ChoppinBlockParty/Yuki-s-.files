@@ -3,7 +3,29 @@
 set -e
 set +x
 
-sudo apt-get install -y --no-install-recommends rxvt-unicode zsh zsh-common tmux curl automake cmake libpcre3-dev pkg-config liblzma-dev zlib1g-dev xsel htop
+sudo apt-get install -y --no-install-recommends \
+                                   rxvt-unicode \
+                                   zsh \
+                                   zsh-common \
+                                   tmux \
+                                   curl \
+                                   automake \
+                                   cmake \
+                                   libpcre3-dev \
+                                   pkg-config \
+                                   liblzma-dev \
+                                   zlib1g-dev \
+                                   xsel \
+                                   htop \
+                                   g++ \
+                                   clang \
+                                   clang-format \
+                                   clang-tidy \
+                                   clang-tools \
+                                   make \
+                                   golang-go \
+                                   npm \
+                                   python3-dev
 
 SCRIPT_DIR="$(realpath -s "$(dirname "$0")")"
 INSTALL_PREFIX="${INSTALL_PREFIX:-`realpath -s $HOME`}"
@@ -74,17 +96,17 @@ fi
 tar -xzf fzf.tgz
 mv -f fzf "$BIN_INSTALL_PREFIX"
 
-mkdir -p "$SCRIPT_DIR/.ag-build"
-cd "$SCRIPT_DIR/.ag-build"
-clone_update_git_repo https://github.com/ggreer/the_silver_searcher
-if [[ ! -d "`pwd`/.install" ]]; then
-  make clean || true
-  ./autogen.sh
-  ./configure --prefix="`pwd`/.install"
-  make
-  make install
-fi
-cp -f "`pwd`/.install/bin/ag" "$BIN_INSTALL_PREFIX"
+# mkdir -p "$SCRIPT_DIR/.ag-build"
+# cd "$SCRIPT_DIR/.ag-build"
+# clone_update_git_repo https://github.com/ggreer/the_silver_searcher
+# if [[ ! -d "`pwd`/.install" ]]; then
+#   make clean || true
+#   ./autogen.sh
+#   ./configure --prefix="`pwd`/.install"
+#   make
+#   make install
+# fi
+# cp -f "`pwd`/.install/bin/ag" "$BIN_INSTALL_PREFIX"
 
 if [[ -x $(command -v dpkg) ]]; then
   mkdir -p "$SCRIPT_DIR/.rg-build"

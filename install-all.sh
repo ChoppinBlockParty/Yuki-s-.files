@@ -27,6 +27,18 @@ export LDFLAGS="-flto"
 
 cd ../
 
+if [[ ! -d ycmd ]]; then
+    git clone https://github.com/ycm-core/ycmd.git
+    cd ycmd
+    git submodule update --init --recursive
+else
+    cd ycmd
+fi
+
+python3 build.py --clang-completer --go-completer --rust-completer --ts-completer --clang-tidy
+
+cd ~/yuki
+
 if [[ ! -d dwm ]]; then
   git clone https://github.com/choppinblockparty/yuki-s-dwm dwm
   cd dwm
@@ -42,6 +54,7 @@ cd ~
 if [[ ! -d .emacs.d ]]; then
   git clone https://github.com/choppinblockparty/yuki-s-.emacs.d .emacs.d
   cd .emacs.d
+  git submodule update --init --recursive
 else
   cd .emacs.d
   git pull
@@ -49,7 +62,7 @@ fi
 
 ./tools/install-prerequisits.sh
 
-./tools/install-emacs.sh /opt
+./tools/install-emacs.sh /opt/emacs
 
 cd ~/yuki
 
