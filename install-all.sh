@@ -5,6 +5,8 @@ set -x
 
 export NPROC=4
 
+sudo apt-get install --no-install-recommends -y g++
+
 # ./build-llvm.sh
 #
 # # ## -flto required ld.gold, otherwise results in segmentation faults
