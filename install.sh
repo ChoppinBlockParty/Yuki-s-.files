@@ -10,6 +10,7 @@ sudo apt-get install -y --no-install-recommends \
                                    tmux \
                                    curl \
                                    automake \
+                                   make \
                                    cmake \
                                    libpcre3-dev \
                                    pkg-config \
@@ -18,14 +19,18 @@ sudo apt-get install -y --no-install-recommends \
                                    xsel \
                                    htop \
                                    g++ \
-                                   clang \
-                                   clang-format \
-                                   clang-tidy \
-                                   clang-tools \
-                                   make \
+                                   python3-dev \
                                    golang-go \
-                                   npm \
-                                   python3-dev
+                                   rustc \
+                                   cargo \
+                                   rust-lldb \
+                                   rust-gdb
+
+# Failed to install on Ubuntu 20. Use ./build-new-llvm.sh.
+# clang \
+# clang-format \
+# clang-tidy \
+# clang-tools \
 
 SCRIPT_DIR="$(realpath -s "$(dirname "$0")")"
 INSTALL_PREFIX="${INSTALL_PREFIX:-`realpath -s $HOME`}"

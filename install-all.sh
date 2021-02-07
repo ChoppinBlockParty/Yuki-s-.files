@@ -3,9 +3,7 @@
 set -e
 set -x
 
-export NPROC=4
-
-sudo apt-get install --no-install-recommends -y g++
+export NPROC=${NPROC:-4}
 
 # ./build-llvm.sh
 #
@@ -37,7 +35,17 @@ else
     cd ycmd
 fi
 
-python3 build.py --clang-completer --go-completer --rust-completer --ts-completer --clang-tidy
+python3 build.py --clang-completer --go-completer --rust-completer --ts-completer
+
+go get github.com/nsf/gocode
+go get github.com/rogpeppe/godef
+
+if node --version 2>&1 1>/dev/null; then
+    cd ~/
+    npm install prettier
+else
+    echo "Need to install latest node from https://nodejs.org/en/download/"
+fi
 
 cd ~/yuki
 
