@@ -1,7 +1,7 @@
 SCRIPT_DIR="$HOME"
 
-export PATH="$HOME/bin:$HOME/.yarn/bin:$PATH"
-export BROWSER='firefox'
+export PATH="$HOME/.local/bin:$HOME/bin:$HOME/node_modules/.bin:$PATH"
+export BROWSER='brave-browser'
 export EDITOR='setsid emacs'
 export VISUAL='setsid emacs'
 export PAGER='less'

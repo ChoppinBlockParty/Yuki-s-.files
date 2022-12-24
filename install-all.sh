@@ -39,6 +39,7 @@ python3 build.py --clang-completer --go-completer --rust-completer --ts-complete
 
 go get github.com/nsf/gocode
 go get github.com/rogpeppe/godef
+go get golang.org/x/tools/gopls
 
 if node --version 2>&1 1>/dev/null; then
     cd ~/

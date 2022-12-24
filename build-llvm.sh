@@ -3,15 +3,16 @@
 set -e
 set +x
 
-sudo apt-get install --no-install-recommends -y binutils-dev cmake make g++
+sudo -E apt-get install --no-install-recommends -y binutils-dev cmake make g++
 
 sudo ln -sf /usr/bin/x86_64-linux-gnu-ld.gold /usr/bin/x86_64-linux-gnu-ld
 
 SCRIPT_DIR="$(realpath -s "$(dirname "$0")")"
-BRANCH=release_70
+BRANCH=${1:-release/14.x}
+NPROC=${2:-4}
 
 function clone_update_git_repo {
-  local new_dirpath="`pwd`/$(basename "$1")"
+  local new_dirpath="`pwd`/$(basename "$1" | sed s/\.git$//)"
   if [[ -d $new_dirpath ]]; then
     echo "  -- Does not clone \"$1\": \"$new_dirpath\" exists"
   else
@@ -27,44 +28,13 @@ function clone_update_git_repo {
   echo "  -- Update \"$1\", branch $branch"
 }
 
-clone_update_git_repo https://github.com/llvm-mirror/llvm $BRANCH
+clone_update_git_repo https://github.com/llvm/llvm-project.git $BRANCH
 
-cd "$SCRIPT_DIR/llvm/tools"
-clone_update_git_repo https://github.com/llvm-mirror/clang $BRANCH
-
-cd "$SCRIPT_DIR/llvm/tools/clang/tools"
-clone_update_git_repo https://github.com/llvm-mirror/clang-tools-extra $BRANCH
-
-### Checkout LLD linker [Optional]:
-# cd "$SCRIPT_DIR/llvm/tools"
-# clone_update_git_repo https://github.com/llvm-mirror/lld
-
-### Checkout Polly Loop Optimizer [Optional]:
-# cd "$SCRIPT_DIR/llvm/tools"
-# svn co http://llvm.org/svn/llvm-project/polly/trunk polly
-
-### Checkout Compiler-RT (required to build the sanitizers) [Optional]:
-cd "$SCRIPT_DIR/llvm/projects"
-clone_update_git_repo https://github.com/llvm-mirror/compiler-rt $BRANCH
-
-### Checkout Libomp (required for OpenMP support) [Optional]:
-# cd "$SCRIPT_DIR/llvm/projects"
-# svn co http://llvm.org/svn/llvm-project/openmp/trunk openmp
-
-### Checkout libcxx and libcxxabi [Optional]:
-# cd "$SCRIPT_DIR/llvm/projects"
-# svn co http://llvm.org/svn/llvm-project/libcxx/trunk libcxx
-# svn co http://llvm.org/svn/llvm-project/libcxxabi/trunk libcxxabi
-
-### Get the Test Suite Source Code [Optional]
-# cd "$SCRIPT_DIR/llvm/projects"
-# svn co http://llvm.org/svn/llvm-project/test-suite/trunk test-suite
-
-cd "$SCRIPT_DIR/llvm"
+cd "$SCRIPT_DIR/llvm-project"
 mkdir -p .build
 cd .build
 ### Need `-DLLVM_USE_LINKER=gold` to enable `-flto` flag
-cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr/local -DLLVM_USE_LINKER=gold -DLLVM_BINUTILS_INCDIR=/usr/include ../
+cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr/local -DLLVM_USE_LINKER=gold -DLLVM_BINUTILS_INCDIR=/usr/include -DLLVM_ENABLE_PROJECTS="clang;clang-tools-extra" -DLLVM_ENABLE_RUNTIMES="libcxx;libcxxabi"  ../llvm
 make -j $NPROC
 sudo make install
 

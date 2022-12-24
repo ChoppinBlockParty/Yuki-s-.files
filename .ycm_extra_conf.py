@@ -4,8 +4,9 @@ import subprocess
 import ycm_core
 
 def LoadSystemIncludes():
+    gcc_version = 9999
     regex = re.compile(r'(?:\#include \<...\> search starts here\:)(?P<list>.*?)(?:End of search list)', re.DOTALL);
-    process = subprocess.Popen(['clang', '-v', '-E', '-x', 'c++', '-'], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE);
+    process = subprocess.Popen(['clang', '-stdlib=libc++', '-v', '-E', '-x', 'c++', '-'], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE);
     process_out, process_err = process.communicate('');
     output = process_out + process_err;
     includes = [];
@@ -13,7 +14,11 @@ def LoadSystemIncludes():
         p = p.strip();
         if len(p) > 0 and p.find('(framework directory)') < 0:
             includes.append('-isystem');
-            includes.append(p);
+            p_with_version = os.path.join(p, str(gcc_version))
+            if os.path.isdir(p_with_version):
+                includes.append(p_with_version);
+            else:
+                includes.append(p);
     return includes
 
 SOURCE_EXTENSIONS = [ '.cpp', '.cxx', '.cc', '.c', '.m', '.mm' ]
@@ -109,8 +114,9 @@ def GetCompilationInfoForFile( filename ):
   return database.GetCompilationInfoForFile( filename )
 
 
-def FlagsForFile( filename, **kwargs ):
+def Settings(**kwargs):
   if database:
+    filename = kwargs['filename']
     # Bear in mind that compilation_info.compiler_flags_ does NOT return a
     # python list, but a "list-like" StringVec object
     compilation_info = GetCompilationInfoForFile( filename )
