@@ -24,8 +24,6 @@ export CXXFLAGS='-O3 -fomit-frame-pointer -fstrict-aliasing -flto'
 export LDFLAGS="-flto"
 
 ./install.sh
-./install-ycmd.sh
-
 
 if node --version 2>&1 1>/dev/null; then
     cd ~/
@@ -43,6 +41,8 @@ else
   cd dwm
   git pull
 fi
+
+./install.sh
 
 cd ~
 
@@ -68,3 +68,5 @@ else
   cd keyboard-hook
   git pull
 fi
+
+./install.sh
