@@ -3,6 +3,8 @@
 set -e
 set -x
 
+# Rather use LLVM repo - https://apt.llvm.org/
+
 sudo -E apt-get install --no-install-recommends -y binutils-dev cmake make g++
 
 # Sometimes fails if not set.
