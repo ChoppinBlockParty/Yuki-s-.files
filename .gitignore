@@ -7,3 +7,4 @@
 /.rg-build
 /.xcb-util-xrm-build
 /llvm-project
+/python*
