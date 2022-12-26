@@ -1,15 +1,17 @@
 #! /usr/bin/env bash
 
 set -e
-set +x
+set -x
 
 sudo -E apt-get install --no-install-recommends -y binutils-dev cmake make g++
 
+# Sometimes fails if not set.
+`ulimit -n | grep -q "65535"` || ulimit -n 65535
 sudo ln -sf /usr/bin/x86_64-linux-gnu-ld.gold /usr/bin/x86_64-linux-gnu-ld
 
 SCRIPT_DIR="$(realpath -s "$(dirname "$0")")"
-BRANCH=${1:-release/14.x}
-NPROC=${2:-4}
+BRANCH=${1:-release/15.x}
+NPROC=${NPROC:-`nproc --all | awk '{print ($1 - $1%3)*2/3}'`}
 
 function clone_update_git_repo {
   local new_dirpath="`pwd`/$(basename "$1" | sed s/\.git$//)"
@@ -34,9 +36,13 @@ cd "$SCRIPT_DIR/llvm-project"
 mkdir -p .build
 cd .build
 ### Need `-DLLVM_USE_LINKER=gold` to enable `-flto` flag
-cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr/local -DLLVM_USE_LINKER=gold -DLLVM_BINUTILS_INCDIR=/usr/include -DLLVM_ENABLE_PROJECTS="clang;clang-tools-extra" -DLLVM_ENABLE_RUNTIMES="libcxx;libcxxabi"  ../llvm
+cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr/local -DLLVM_USE_LINKER=gold -DLLVM_BINUTILS_INCDIR=/usr/include -DLLVM_ENABLE_PROJECTS="clang;clang-tools-extra" -DLLVM_ENABLE_RUNTIMES="libcxx;libcxxabi" ../llvm
 make -j $NPROC
 sudo make install
 
-echo "/usr/local/lib" | sudo tee /etc/ld.so.conf.d/my-usr-local.conf
+ld_conf_file=/etc/ld.so.conf.d/my-usr-local.conf
+if ! grep -q '^/usr/local/lib$' ${ld_conf_file} 2>/dev/null; then
+    echo "/usr/local/lib" | sudo tee ${ld_conf_file}
+fi
+
 sudo ldconfig

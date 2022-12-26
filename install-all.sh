@@ -24,22 +24,8 @@ export CXXFLAGS='-O3 -fomit-frame-pointer -fstrict-aliasing -flto'
 export LDFLAGS="-flto"
 
 ./install.sh
+./install-ycmd.sh
 
-cd ../
-
-if [[ ! -d ycmd ]]; then
-    git clone https://github.com/ycm-core/ycmd.git
-    cd ycmd
-    git submodule update --init --recursive
-else
-    cd ycmd
-fi
-
-python3 build.py --clang-completer --go-completer --rust-completer --ts-completer
-
-go get github.com/nsf/gocode
-go get github.com/rogpeppe/godef
-go get golang.org/x/tools/gopls
 
 if node --version 2>&1 1>/dev/null; then
     cd ~/
@@ -57,8 +43,6 @@ else
   cd dwm
   git pull
 fi
-
-./install.sh
 
 cd ~
 
@@ -84,5 +68,3 @@ else
   cd keyboard-hook
   git pull
 fi
-
-./install.sh

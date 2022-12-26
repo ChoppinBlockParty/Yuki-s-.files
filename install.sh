@@ -23,8 +23,8 @@ sudo apt-get install -y --no-install-recommends \
                                    golang-go \
                                    rustc \
                                    cargo \
-                                   rust-lldb \
                                    rust-gdb
+                                   # rust-lldb \
 
 # Failed to install on Ubuntu 20. Use ./build-new-llvm.sh.
 # clang \
@@ -37,7 +37,7 @@ INSTALL_PREFIX="${INSTALL_PREFIX:-`realpath -s $HOME`}"
 BIN_INSTALL_PREFIX="$INSTALL_PREFIX/bin"
 FZF_VERSION=0.21.1
 RG_VERSION=12.1.1
-FD_VERSION=8.1.1
+FD_VERSION=8.6.0
 
 function install_file {
   local new_filepath="${2:-"$INSTALL_PREFIX"}/${3:-$(basename "$1")}"
