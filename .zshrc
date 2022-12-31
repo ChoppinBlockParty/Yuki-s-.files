@@ -629,10 +629,30 @@ ZSH_HIGHLIGHT_STYLES[arg0]=fg=203
 
 source "$SCRIPT_DIR/.zshrc_extra"
 
-if [[ -n $INSIDE_EMACS ]]; then
+vterm_printf() {
+    if [ -n "$TMUX" ] && ([ "${TERM%%-*}" = "tmux" ] || [ "${TERM%%-*}" = "screen" ]); then
+        # Tell tmux to pass the escape sequences through
+        printf "\ePtmux;\e\e]%s\007\e\\" "$1"
+    elif [ "${TERM%%-*}" = "screen" ]; then
+        # GNU screen (screen, screen-256color, screen-256color-bce)
+        printf "\eP\e]%s\007\e\\" "$1"
+    else
+        printf "\e]%s\e\\" "$1"
+    fi
+}
+
+vterm_prompt_end() {
+    vterm_printf "51;A$(whoami)@$(hostname):$(pwd)"
+}
+setopt PROMPT_SUBST
+PROMPT=$PROMPT'%{$(vterm_prompt_end)%}'
+
+if [[ $INSIDE_EMACS == *"comint"* ]]; then
   # export TERM=xterm-256color
   # export COLORTERM=1
   # This shell runs inside an Emacs *shell*/*term* buffer.
   # Have to unset zle, it messes up with Emacs buffer.
   unsetopt zle
+elif [[ $INSIDE_EMACS = 'vterm' ]]; then
+    alias clear='vterm_printf "51;Evterm-clear-scrollback";tput clear'
 fi
