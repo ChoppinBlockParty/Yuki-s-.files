@@ -48,7 +48,9 @@ for index ({1..9}) alias "$index"="cd +${index}"; unset index
 #When ZLE is reading a command from the terminal, it may read a sequence that is bound to some command and is also a prefix of a longer bound string. In this case ZLE will wait a certain time to see if more characters are typed, and if not (or they don't match any longer string) it will execute the binding. This timeout is defined by the KEYTIMEOUT parameter; its default is 0.4 sec. There is no timeout if the prefix string is not itself bound to a command.
 # for vi <esc> hit to happen in 0.1s instead of 0.4s
 export KEYTIMEOUT=1
-bindkey -v
+if [[ -z $INSIDE_EMACS ]]; then
+  bindkey -v
+fi
 # Fixes backspace after vim mode
 # https://superuser.com/questions/476532/how-can-i-make-zshs-vi-mode-behave-more-like-bashs-vi-mode/533685#533685
 bindkey "^?" backward-delete-char
