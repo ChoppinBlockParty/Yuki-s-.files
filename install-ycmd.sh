@@ -11,12 +11,13 @@ if [[ ! -d ycmd ]]; then
     git submodule update --init --recursive
 else
     cd ycmd
+    git pull origin
 fi
 
 go version
-go get github.com/nsf/gocode
-go get github.com/rogpeppe/godef
+go install github.com/nsf/gocode@latest
+go install github.com/rogpeppe/godef@latest
 # Does not work on go below 1.16
 # go get golang.org/x/tools/gopls
 
-python3 build.py --clang-completer --go-completer --rust-completer --ts-completer
+python3 build.py --clang-completer --go-completer

@@ -35,9 +35,9 @@ sudo apt-get install -y --no-install-recommends \
 SCRIPT_DIR="$(realpath -s "$(dirname "$0")")"
 INSTALL_PREFIX="${INSTALL_PREFIX:-`realpath -s $HOME`}"
 BIN_INSTALL_PREFIX="$INSTALL_PREFIX/bin"
-FZF_VERSION=0.21.1
-RG_VERSION=12.1.1
-FD_VERSION=8.6.0
+FZF_VERSION=0.38.0
+RG_VERSION=13.0.0
+FD_VERSION=8.7.0
 
 function install_file {
   local new_filepath="${2:-"$INSTALL_PREFIX"}/${3:-$(basename "$1")}"
@@ -96,9 +96,9 @@ sudo fc-cache -f
 mkdir -p "$SCRIPT_DIR/.fzf-build"
 cd "$SCRIPT_DIR/.fzf-build"
 if [[ ! -f fzf.tgz ]]; then
-  curl -L "https://github.com/junegunn/fzf-bin/releases/download/${FZF_VERSION}/fzf-${FZF_VERSION}-linux_amd64.tgz" > fzf.tgz
+  curl -L "https://github.com/junegunn/fzf/releases/download/${FZF_VERSION}/fzf-${FZF_VERSION}-linux_amd64.tar.gz" > fzf.tar.gz
 fi
-tar -xzf fzf.tgz
+tar -xzf fzf.tar.gz
 mv -f fzf "$BIN_INSTALL_PREFIX"
 
 # mkdir -p "$SCRIPT_DIR/.ag-build"

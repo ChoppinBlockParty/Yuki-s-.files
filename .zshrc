@@ -516,14 +516,13 @@ function ls_or_less {
   fi
   eval "${aliases[ls]:-ls} -lhAa "${1:-.}""
 }
-compdef -e '_less' ls_or_less
+# compdef -e '_less' ls_or_less
 
-alias ls='ls --group-directories-first'
-alias ls="${aliases[ls]:-ls} --color=auto"
+alias ls='ls --group-directories-first --color=auto'
+#alias ls="${aliases[ls]:-ls} --color=auto"
 alias ll='ls -lh'        # Lists human readable sizes.
 alias la='ll -A'         # Lists human readable sizes, hidden files.
-alias la='ls_or_less'
-alias ld='ls -lah --color=always | ag --nocolor "^(d|l)"'
+alias lr='ls -lah --color=always | rg -N'
 alias lf='ls -lah --color=always | ag --nocolor'
 
 function mkcd {
@@ -658,3 +657,7 @@ if [[ $INSIDE_EMACS == *"comint"* ]]; then
 elif [[ $INSIDE_EMACS = 'vterm' ]]; then
     alias clear='vterm_printf "51;Evterm-clear-scrollback";tput clear'
 fi
+
+# Enable docker completion
+zstyle ':completion:*:*:docker:*' option-stacking yes
+zstyle ':completion:*:*:docker-*:*' option-stacking yes
