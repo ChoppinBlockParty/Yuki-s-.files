@@ -567,13 +567,15 @@ function psu {
 }
 
 alias gb="git branch"
-alias gc="git add -A && git commit -m"
+alias gc="git commit -am"
 alias gch="git checkout"
 alias gca="git add -A && git commit --amend"
 alias gp="git push origin"
 alias gpp="git push"
 alias gs="git status"
 alias gl="git log --pretty=oneline -10"
+
+alias sd="sudo shutdown 0"
 
 HISTFILE="$CACHE_PREFIX/.zhistory" # The path to the history file.
 HISTSIZE=1000000                   # The maximum number of events to save in the internal history.

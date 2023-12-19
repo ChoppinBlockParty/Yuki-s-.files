@@ -4,6 +4,8 @@ set -e
 set +x
 
 sudo apt-get install -y --no-install-recommends \
+                                   blueman \
+                                   arandr \
                                    rxvt-unicode \
                                    zsh \
                                    zsh-common \
@@ -35,9 +37,11 @@ sudo apt-get install -y --no-install-recommends \
 SCRIPT_DIR="$(realpath -s "$(dirname "$0")")"
 INSTALL_PREFIX="${INSTALL_PREFIX:-`realpath -s $HOME`}"
 BIN_INSTALL_PREFIX="$INSTALL_PREFIX/bin"
-FZF_VERSION=0.38.0
+FZF_VERSION=0.43.0
 RG_VERSION=13.0.0
 FD_VERSION=8.7.0
+
+mkdir -p ${SCRIPT_DIR}/temp
 
 function install_file {
   local new_filepath="${2:-"$INSTALL_PREFIX"}/${3:-$(basename "$1")}"
@@ -96,7 +100,7 @@ sudo fc-cache -f
 mkdir -p "$SCRIPT_DIR/.fzf-build"
 cd "$SCRIPT_DIR/.fzf-build"
 if [[ ! -f fzf.tgz ]]; then
-  curl -L "https://github.com/junegunn/fzf/releases/download/${FZF_VERSION}/fzf-${FZF_VERSION}-linux_amd64.tar.gz" > fzf.tar.gz
+  curl -L -o fzf.tar.gz "https://github.com/junegunn/fzf/releases/download/${FZF_VERSION}/fzf-${FZF_VERSION}-linux_amd64.tar.gz"
 fi
 tar -xzf fzf.tar.gz
 mv -f fzf "$BIN_INSTALL_PREFIX"
@@ -136,6 +140,9 @@ clone_update_git_repo https://github.com/Morantron/tmux-fingers
 cd - 1>/dev/null
 clone_update_git_repo https://github.com/tmux-plugins/tmux-yank
 cd - 1>/dev/null
+
+cargo install alacritty
+ln -s ~/.cargo/bin/alacritty ~/bin
 
 install_file "$SCRIPT_DIR/.tmux.conf"
 
