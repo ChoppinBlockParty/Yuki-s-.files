@@ -142,7 +142,7 @@ clone_update_git_repo https://github.com/tmux-plugins/tmux-yank
 cd - 1>/dev/null
 
 cargo install alacritty
-ln -s ~/.cargo/bin/alacritty ~/bin
+ln -fs ~/.cargo/bin/alacritty ~/bin
 
 install_file "$SCRIPT_DIR/.tmux.conf"
 
@@ -158,7 +158,7 @@ cd - 1>/dev/null
 install_file "$SCRIPT_DIR/.zlogin"
 install_file "$SCRIPT_DIR/.zshrc"
 install_file "$SCRIPT_DIR/.zshenv"
-install_file "$SCRIPT_DIR/.alacritty"
+install_file "$SCRIPT_DIR/.alacritty.yml"
 if [[ ! -f "$INSTALL_PREFIX/.zshrc_extra" ]]; then
   touch "$INSTALL_PREFIX/.zshrc_extra"
 fi
