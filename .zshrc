@@ -576,6 +576,7 @@ alias gs="git status"
 alias gl="git log --pretty=oneline -10"
 
 alias sd="sudo shutdown 0"
+alias npr='npm run'
 
 HISTFILE="$CACHE_PREFIX/.zhistory" # The path to the history file.
 HISTSIZE=1000000                   # The maximum number of events to save in the internal history.

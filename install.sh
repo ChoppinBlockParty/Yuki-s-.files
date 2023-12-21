@@ -1,7 +1,7 @@
 #! /usr/bin/env bash
 
 set -e
-set +x
+set -x
 
 sudo apt-get install -y --no-install-recommends \
                                    blueman \
@@ -158,6 +158,7 @@ cd - 1>/dev/null
 install_file "$SCRIPT_DIR/.zlogin"
 install_file "$SCRIPT_DIR/.zshrc"
 install_file "$SCRIPT_DIR/.zshenv"
+install_file "$SCRIPT_DIR/.alacritty"
 if [[ ! -f "$INSTALL_PREFIX/.zshrc_extra" ]]; then
   touch "$INSTALL_PREFIX/.zshrc_extra"
 fi
