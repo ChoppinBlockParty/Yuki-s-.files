@@ -1,0 +1,12 @@
+[Unit]
+Description=kmonad keyboard config
+
+[Service]
+Restart=always
+RestartSec=3
+ExecStart=/usr/bin/bash -c 'exec /usr/local/bin/kmonad $HOME/kmonad.kbd'
+Nice=-20
+
+[Install]
+DefaultInstance=config
+WantedBy=default.target
