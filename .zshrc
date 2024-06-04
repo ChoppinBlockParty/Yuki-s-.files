@@ -506,7 +506,9 @@ alias .5='cd ../../../../../'
 if [[ $(uname) == "Darwin" ]]; then
     export CLICOLOR=1
     alias ls='gls'
-    alias e='`emacsclient -a "" -c 1>/dev/null 2>&1 &`'
+    function e {
+        bash -c "emacsclient -a '' -c -- ""$@"" 1>/dev/null 2>&1 &"
+    }
 else
     alias ls='ls --color=auto'
     eval "$(dircolors -sh)"
