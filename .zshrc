@@ -507,7 +507,8 @@ if [[ $(uname) == "Darwin" ]]; then
     export CLICOLOR=1
     alias ls='gls'
     function e {
-        bash -c "emacsclient -a '' -c -- ""$@"" 1>/dev/null 2>&1 &"
+        #bash -c "emacsclient -a '' -c -- ""$@"" 1>/dev/null 2>&1 &"
+        bash -c "emacs -- ""$@"" 1>/dev/null 2>&1 &"
     }
 else
     alias ls='ls --color=auto'
