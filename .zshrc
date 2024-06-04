@@ -389,7 +389,7 @@ fzf-completion() {
 }
 
 zle     -N   fzf-completion
-# bindkey '^F' fzf-completion
+bindkey '^F' fzf-completion
 export FZF_COMPLETION_TRIGGER=''
 
 
@@ -487,12 +487,6 @@ zle     -N   fzf-history-widget
 bindkey '^R' fzf-history-widget
 bindkey -M vicmd '^R' fzf-history-widget
 
-eval "$(dircolors --sh)"
-
-# alias e='setsid emacs'
-e() {
-  setsid env -u HTTPS_PROXY -u HTTP_PROXY -u https_proxy -u http_proxy emacs "$@"
-}
 
 alias sudo='sudo '
 
@@ -509,21 +503,24 @@ alias .3='cd ../../../'
 alias .4='cd ../../../../'
 alias .5='cd ../../../../../'
 
-function ls_or_less {
-  if [ -f "$1" ]; then
-    less "$1"
-    return
-  fi
-  eval "${aliases[ls]:-ls} -lhAa "${1:-.}""
-}
-# compdef -e '_less' ls_or_less
+if [[ $(uname) == "Darwin" ]]; then
+    export CLICOLOR=1
+    alias ls='gls'
+    alias e='`emacsclient -a "" -c 1>/dev/null 2>&1 &`'
+else
+    alias ls='ls --color=auto'
+    eval "$(dircolors -sh)"
+    alias e="${EDITOR}"
+fi
 
-alias ls='ls --group-directories-first --color=auto'
+alias vim=nvim
+alias v=nvim
+
 #alias ls="${aliases[ls]:-ls} --color=auto"
-alias ll='ls -lh'        # Lists human readable sizes.
-alias la='ll -A'         # Lists human readable sizes, hidden files.
-alias lr='ls -lah --color=always | rg -N'
-alias lf='ls -lah --color=always | ag --nocolor'
+alias ls="${aliases[ls]:-ls} --group-directories-first --color=auto"
+alias ll="${aliases[ls]:-ls} -lh" # Lists human readable sizes.
+alias la='ll -A' # Lists human readable sizes, hidden files.
+alias lf="${aliases[ls]:-ls} -lah --color=always | rg -N"
 
 function mkcd {
   [[ -n "$1" ]] && mkdir -p "$1" && builtin cd "$1"
@@ -540,7 +537,7 @@ imv() {
   done
 }
 
-alias fp='ps auxw | rg'
+alias pf='ps auxw | rg -N'
 
 alias rg='rg -S --no-ignore-global --no-ignore-vcs --hidden --no-heading --line-number --color auto'
 alias ag='ag --skip-vcs-ignores --hidden --ignore node_modules --ignore .git --ignore .build --ignore archive-contents --color'

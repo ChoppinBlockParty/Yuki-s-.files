@@ -1,18 +1,17 @@
 [core]
-  editor = setsid emacs
   symlinks = true
   autocrlf = false
   ignorecase = false
   whitespace = trailing-space,space-before-tab
   filemode = false
   excludesfile  = ~/.gitconfig_ignore
-	pager = diff-so-fancy | less --tabs=2 -RFX
+  pager = diff-so-fancy | less --tabs=2 -RFX
 [color]
   diff = auto
   status = auto
   branch = auto
   interactive = true
-	ui = true
+  ui = true
 [pack]
   packSizeLimit = 2g
 [help]

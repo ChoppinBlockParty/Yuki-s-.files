@@ -1,9 +1,14 @@
 SCRIPT_DIR="$HOME"
 
-export PATH="$HOME/.local/bin:$HOME/bin:$HOME/node_modules/.bin:$PATH"
 export BROWSER='brave-browser'
-export EDITOR='setsid emacs'
-export VISUAL='setsid emacs'
+export EDITOR='setsid emacsclient -a "" -c'
+export VISUAL='setsid emacsclient -a "" -c'
+if [[ $(uname) == "Darwin" ]]; then
+    eval $(/opt/homebrew/bin/brew shellenv)
+    export PATH="/Applications/Emacs.app/Contents/MacOS/bin:$PATH"
+else
+    export PATH="$HOME/.local/bin:$HOME/bin:$HOME/node_modules/.bin:$PATH"
+fi
 export PAGER='less'
 export FZF_DEFAULT_OPTS="--bind=ctrl-j:down,ctrl-k:up,alt-j:down,alt-k:up,ctrl-s:kill-line"
 export FZF_DEFAULT_COMMAND='fd --hidden --no-ignore-vcs --color never --type f'

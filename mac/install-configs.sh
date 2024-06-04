@@ -3,7 +3,7 @@
 set -e
 set -x
 
-SCRIPT_DIR="$(realpath "$(dirname "$0")")"
+SCRIPT_DIR="$(realpath $(realpath "$(dirname "$0")")/..)"
 INSTALL_PREFIX="${INSTALL_PREFIX:-`realpath $HOME`}"
 BIN_INSTALL_PREFIX="$INSTALL_PREFIX/bin"
 
@@ -58,10 +58,13 @@ function clone_update_git_repo {
 
 mkdir -p "$BIN_INSTALL_PREFIX"
 
-curl -LO  'https://github.com/powerline/fonts/raw/master/Inconsolata-g/Inconsolata-g%20for%20Powerline.otf'
-mkdir -p ~/.local/share/fonts
-mv -f Inconsolata-g%20for%20Powerline.otf ~/.local/share/fonts/Inconsolata-g\ for\ Powerline.otf
-sudo fc-cache -f
+inconsolate_path="~/.local/share/fonts/Inconsolata-g\ for\ Powerline.otf"
+if [ ! -f ${inconsolata_path} ]; then
+    curl -LO  'https://github.com/powerline/fonts/raw/master/Inconsolata-g/Inconsolata-g%20for%20Powerline.otf'
+    mkdir -p ~/.local/share/fonts
+    mv -f Inconsolata-g%20for%20Powerline.otf ${inconsolate_path}
+    sudo fc-cache -f
+fi
 
 mkdir -p "$INSTALL_PREFIX/.config/tmux"
 cd "$INSTALL_PREFIX/.config/tmux"
@@ -85,7 +88,7 @@ cd - 1>/dev/null
 install_file "$SCRIPT_DIR/.zlogin"
 install_file "$SCRIPT_DIR/.zshrc"
 install_file "$SCRIPT_DIR/.zshenv"
-install_file "$SCRIPT_DIR/.alacritty.yml"
+install_file "$SCRIPT_DIR/.alacritty.toml"
 if [[ ! -f "$INSTALL_PREFIX/.zshrc_extra" ]]; then
   touch "$INSTALL_PREFIX/.zshrc_extra"
 fi

@@ -1,0 +1,42 @@
+[window]
+opacity = 0.9
+
+[colors.normal]
+black = "#1d1f21"
+blue = "#81a2ce"
+cyan = "#8abeb7"
+green = "#66cc66"
+magenta = "#b294bb"
+red = "#cc6666"
+white = "#c5c8c6"
+yellow = "#f0c674"
+
+[colors.cursor]
+text="#000000"
+cursor="#ccff00"
+
+[colors.vi_mode_cursor]
+text="#000000"
+cursor="#00ffcc"
+
+[cursor.style]
+shape = "Beam"
+
+[font]
+#normal={family="DejaVu Sans Mono", style="Book"}
+size = 15.0
+
+[[keyboard.bindings]]
+chars = "\u001F"
+key = "Minus"
+mods = "Control"
+
+[[keyboard.bindings]]
+action = "DecreaseFontSize"
+key = "LBracket"
+mods = "Control"
+
+[[keyboard.bindings]]
+action = "IncreaseFontSize"
+key = "RBracket"
+mods = "Control"

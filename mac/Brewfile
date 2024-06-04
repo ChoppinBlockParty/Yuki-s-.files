@@ -1,12 +1,18 @@
 cask 'alacritty'
+cask 'font-dejavu-sans-mono-nerd-font'
+
+
 brew 'python@3.12'
 brew 'node'
 brew 'fzf'
 brew 'fd'
 brew 'ripgrep'
+brew 'diff-so-fancy'
 brew 'tmux'
 brew 'git'
 brew 'cmake'
+brew 'neovim'
+
 brew 'autoconf'
 brew 'coreutils'
 brew 'dbus'
