@@ -542,7 +542,7 @@ imv() {
 
 alias pf='ps auxw | rg -N'
 
-alias rg='rg -S --no-ignore-global --no-ignore-vcs --hidden --no-heading --line-number --color auto'
+alias rg='rg -S --no-ignore-global --no-ignore-vcs --hidden --no-heading --color auto'
 alias ag='ag --skip-vcs-ignores --hidden --ignore node_modules --ignore .git --ignore .build --ignore archive-contents --color'
 alias fd='fd --hidden --no-ignore-vcs --color auto'
 alias em='emacs -nw'
